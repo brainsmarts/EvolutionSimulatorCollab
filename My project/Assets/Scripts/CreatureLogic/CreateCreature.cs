@@ -115,8 +115,8 @@ public class CreateCreature : MonoBehaviour
         rb.SetTransform(creature_transform);
 
         actions.Add(response);
-        actions.Add(rb);
         actions.Add(find_food);
+        actions.Add(rb);
         actions.Add(wander);
         return actions;
     }

@@ -61,6 +61,8 @@ public class RequestBreed : ActionBase
         {
             if (creature.Value > 30)
             {
+                if(creature.Key == data.ID)
+                    return false;
                 data.Target_id = creature.Key;
                 Debug.Log(data.ID + " Has found " + data.Target_id + "To be very breedable");
                 return true;
