@@ -15,8 +15,9 @@ public class BreedResponse : Response
     }
     public void Init()
     {
-        breeder_id = data.requester_id;
+        breeder_id = data.Target_id;
         grid = GameManager.Instance.getGrid();
+        data.DecreaseEnergy(30);
     }
 
     public bool RunResponse()

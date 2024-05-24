@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class CreatureManager : MonoBehaviour
 {
+
     public static CreatureManager instance;
     private List<BaseCreature> list_of_creatures;
 
@@ -16,6 +17,7 @@ public class CreatureManager : MonoBehaviour
     {
         instance = this;
         list_of_creatures = new List<BaseCreature>(gameObject.GetComponentsInChildren<BaseCreature>());
+        
     }
 
     public void AddCreature(BaseCreature creature) 
@@ -23,12 +25,26 @@ public class CreatureManager : MonoBehaviour
         list_of_creatures.Add(creature);
     }
 
+    public void RemoveCreature(BaseCreature creature){
+        BaseCreature remove = creature;
+        /*
+        foreach (BaseCreature c in list_of_creatures)
+        {
+            if (c.GetID() == creature.GetID()){
+                remove = c;
+                break;
+            }
+        }*/
+
+        list_of_creatures.Remove(remove);
+    }
+
     public void FixedUpdate()
     {
         string display = "";
         foreach (BaseCreature creature in list_of_creatures)
         {
-            display += creature.GetID() + " " + creature.GetCurrentAction() + "\n";
+            display += creature.GetID() + " " + creature.GetCurrentAction() + " " + creature.GetData().Current_energy +"\n";
         }
         debug_text.text = display;
     }
@@ -61,6 +77,9 @@ public class CreatureManager : MonoBehaviour
     public Vector3Int GetCreaturePosition(int creature_id)
     {
         BaseCreature creature = GetCreature(creature_id);
+        Debug.Log(creature_id);
+        if(creature == null)
+            Debug.Log("Another evil");
         return GameManager.Instance.getGrid().WorldToCell(creature.GetGridPosition());
     }
     
@@ -70,6 +89,17 @@ public class CreatureManager : MonoBehaviour
         {
             if(creature.GetID() == creature_id)
                 return creature;
+        }
+
+        return null;
+    }
+
+    public CreatureData GetData(int creature_id){
+        //Debug.Log(creature_id);
+        foreach(BaseCreature creature in list_of_creatures)
+        {
+            if(creature.GetID() == creature_id)
+                return creature.GetData();
         }
 
         return null;

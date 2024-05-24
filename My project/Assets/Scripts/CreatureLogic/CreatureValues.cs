@@ -16,21 +16,15 @@ public class CreatureValues
 
     public static int GetValue(CreatureData data, int value)
     {
-        switch (value)
+        return value switch
         {
-            case MAX_ENERGY:
-                return data.energy;
-            case CUR_ENERGY:
-                return data.energy;
-            case MAX_HEALTH:
-                return data.health;
-            case CUR_HEALTH:
-                return data.health;
-            case SIGHTRANGE:
-                return data.sight_range;
-            case SIZE:
-                return -1;
-        }
-        return -1;
+            MAX_ENERGY => data.Energy,
+            CUR_ENERGY => data.Current_energy,
+            MAX_HEALTH => data.Health,
+            CUR_HEALTH => data.Health,
+            SIGHTRANGE => data.Sight_range,
+            SIZE => -1,
+            _ => -1,
+        };
     }
 }

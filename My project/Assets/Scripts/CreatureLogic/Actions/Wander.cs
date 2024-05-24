@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 
 public class Wander : ActionBase
@@ -7,7 +8,7 @@ public class Wander : ActionBase
 
     public int weight { get; }
     public Transform transform;
-    public CreatureData stats;
+    public CreatureData data;
     private Grid grid;
     private Vector3Int new_position;
     public bool running;
@@ -23,9 +24,9 @@ public class Wander : ActionBase
         this.transform = transform;
     }
 
-    public void SetData(CreatureData stats)
+    public void SetData(CreatureData data)
     {
-        this.stats = stats;
+        this.data = data;
     }
 
     public bool IsRunning()
@@ -38,16 +39,12 @@ public class Wander : ActionBase
         return true;
     }
 
-    public void DoAction(Transform transform, CreatureData stats)
-    {
-        
-    }
-
     public void Init()
     {
         List <Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
         int random = Random.Range(0, neighboors.Count); 
         new_position = neighboors[random];
+        data.DecreaseEnergy(1);
         running = true;
     }
 

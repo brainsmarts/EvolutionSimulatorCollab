@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
@@ -7,13 +8,12 @@ using UnityEngine;
 public class RequestBreed : ActionBase
 {
     private int action_id = 100;
-    private Transform transform;
+    private Transform creature_transform;
     private CreatureData data;
     private Stack<Vector3Int> path;
     private Vector3Int next_location;
     private bool running;
 
-    private int breedable = -1;
     private Vector3Int breedable_locale;
 
     public float last_time_accessed = 0;
@@ -28,7 +28,7 @@ public class RequestBreed : ActionBase
     }
     public void SetTransform(Transform transform)
     {
-        this.transform = transform;
+        this.creature_transform = transform;
     }
     public void SetData(CreatureData data)
     {
@@ -37,6 +37,7 @@ public class RequestBreed : ActionBase
     public int weight { get; }
     public bool IsRunning()
     {
+        
         return running;
     }
     // Start is called before the first frame update
@@ -50,13 +51,18 @@ public class RequestBreed : ActionBase
         {
             return false;
         }
+        if(data.Current_energy < 30){
+            return false;
+        }
+
         last_time_accessed = Time.time;
-        Dictionary<int, int> creatures_in_range = CreatureManager.instance.GetCreaturesInRange(grid.WorldToCell(transform.position), data.sight_range, CreatureValues.CUR_ENERGY);
+        Dictionary<int, int> creatures_in_range = CreatureManager.instance.GetCreaturesInRange(grid.WorldToCell(creature_transform.position), data.Sight_range, CreatureValues.CUR_ENERGY);
         foreach (KeyValuePair<int, int> creature in creatures_in_range)
         {
             if (creature.Value > 30)
             {
-                breedable = creature.Key;
+                data.Target_id = creature.Key;
+                Debug.Log(data.ID + " Has found " + data.Target_id + "To be very breedable");
                 return true;
             }
         }
@@ -68,27 +74,31 @@ public class RequestBreed : ActionBase
     public void Init()
     {
         //get path
-        running = CreatureManager.instance.SendRequest(action_id, breedable);
+        running = CreatureManager.instance.SendRequest(action_id, data.Target_id);
         if (running == false)
         {
-            Debug.Log("Request Declined");
+            //Debug.Log("Request Declined");
+            data.Target_id = -1;
             return;
         }
 
-        Debug.Log("Breeding with " + breedable);
-        data.energy -= 30;
+        Debug.Log("Breeding with " + data.Target_id);
+        data.DecreaseEnergy(30);
        
-        breedable_locale = CreatureManager.instance.GetCreaturePosition(breedable);
-        Debug.Log("Moving to " + breedable_locale);
-        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), breedable_locale);
+        //breedable_locale = CreatureManager.instance.GetCreaturePosition(breedable);
+        //Debug.Log("Moving to " + breedable_locale);
+        //path = GenericMovement.MoveTo(grid.WorldToCell(creature_transform.position), breedable_locale);
     }
     public void Run()
     {
-
+        CreateCreature.instance.BreedNewCreature(data.ID, data.Target_id);
+        data.Target_id = -1;
+        running = false;
+        /*
         //wait for a nudge back that the request has been accepted
-        if (Vector3.Distance(transform.position, grid.GetCellCenterWorld(next_location)) < 0.01f)
+        if (Vector3.Distance(creature_transform.position, grid.GetCellCenterWorld(next_location)) < 0.01f)
         {
-            if (grid.WorldToCell(transform.position).Equals(breedable_locale))
+            if (grid.WorldToCell(creature_transform.position).Equals(breedable_locale))
             {
                 //make baby
                 running = false;
@@ -106,7 +116,8 @@ public class RequestBreed : ActionBase
             }
         }
         var step = 0.5f * Time.deltaTime; // calculate distance to move
-        transform.position = Vector3.MoveTowards(transform.position, grid.GetCellCenterWorld(next_location), step);
+        creature_transform.position = Vector3.MoveTowards(creature_transform.position, grid.GetCellCenterWorld(next_location), step);*/
+
     }
 
     override

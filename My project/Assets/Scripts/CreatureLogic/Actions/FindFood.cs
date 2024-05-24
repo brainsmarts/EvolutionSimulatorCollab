@@ -37,14 +37,14 @@ public class FindFood : ActionBase
     public bool Condition()
     {
         //Debug.Log("Is There food?");
-        food_location = FoodManager.instance.FoodInRange(grid.WorldToCell(transform.position), data.sight_range);
-        return food_location.Equals(grid.WorldToCell(transform.position)) ? false : true;
+        food_location = FoodManager.Instance.FoodInRange(grid.WorldToCell(transform.position), data.Sight_range);
+        return !food_location.Equals(grid.WorldToCell(transform.position));
     }
 
 
     public void Init()
     {
-        List<Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
+        //List<Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
         path = GenericMovement.MoveTo(grid.WorldToCell(transform.position),food_location);
         next_location = path.Pop();
         running = true;
@@ -56,13 +56,14 @@ public class FindFood : ActionBase
         {
             if (grid.WorldToCell(transform.position).Equals(food_location))
             {
-                int energy_gained = FoodManager.instance.EatFood(food_location);
-                data.energy += energy_gained;
+                int energy_gained = FoodManager.Instance.EatFood(food_location);
+                data.IncreaseEnergy(energy_gained);
                 running = false;
             }
             else
             {
                 next_location = path.Pop();
+                data.DecreaseEnergy(1);
             }
             
         }

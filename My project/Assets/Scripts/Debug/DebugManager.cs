@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DebugManager : MonoBehaviour
 {
+    [SerializeField]
+    List<BaseCreature> creatures = null;
     // Start is called before the first frame update
     //Hello Testing Testing
     void Start()

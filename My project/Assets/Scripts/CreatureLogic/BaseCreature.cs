@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BaseCreature : MonoBehaviour
 {
-
+    
     [SerializeField]
     private CreatureData data;
 
@@ -13,11 +13,11 @@ public class BaseCreature : MonoBehaviour
     private ActionBase current_action = null;
 
     [SerializeField]
-    private float idle_length;
+    private float idle_length = 4;
     private float idle_timer;
 
-    [SerializeField]
-    private Animator animator;
+    //[SerializeField]
+    //private Animator animator;
     private Grid grid;
     private bool idle = true;
 
@@ -27,25 +27,24 @@ public class BaseCreature : MonoBehaviour
     {
         grid = GameManager.Instance.getGrid();
 
-        data.request_id = -1;
-        data.target_id = -1;
-        data.requester_id = -1;
+        data.Target_id = -1;
+        data.Request_id = -1;
 
         //setting all possible actions
         actions = new List<ActionBase>();
-        FindFood find_food = new FindFood();
+        FindFood find_food = new();
         find_food.SetData(data);
         find_food.SetTransform(transform);
 
-        Wander wander = new Wander();
+        Wander wander = new();
         wander.SetData(data);
         wander.SetTransform(transform);
 
-        ResponseAccepter response = new ResponseAccepter();
+        ResponseAccepter response = new();
         response.SetData(data);
         response.SetTransform(transform);
 
-        RequestBreed rb = new RequestBreed();
+        RequestBreed rb = new();
         rb.SetData(data);
         rb.SetTransform(transform);
 
@@ -98,6 +97,9 @@ public class BaseCreature : MonoBehaviour
             }
             
         }
+        if(data.Current_energy <= 0){
+            Die();
+        }
     }
 
     private void ResetTimer()
@@ -108,7 +110,8 @@ public class BaseCreature : MonoBehaviour
 
     private void Die()
     {
-
+        CreatureManager.instance.RemoveCreature(this);
+        Destroy(gameObject);
     }
 
     public Vector3 GetGridPosition()
@@ -135,8 +138,12 @@ public class BaseCreature : MonoBehaviour
         if (current_action != null)
             return false;
 
-        data.request_id = request_id;
-        data.requester_id = creature_id;
+        if(data.Request_id != -1)
+            return false;
+        
+
+        data.Target_id = creature_id;
+        data.Request_id = request_id;
         return true;
     }
 
@@ -146,5 +153,13 @@ public class BaseCreature : MonoBehaviour
             return "idle";
 
         return current_action.ToString();
+    }
+
+    public void SetData(CreatureData data){
+        this.data = data;
+    }
+
+    public CreatureData GetData(){
+        return data;
     }
 }

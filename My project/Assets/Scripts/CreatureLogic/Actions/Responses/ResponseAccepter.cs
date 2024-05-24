@@ -28,7 +28,7 @@ public class ResponseAccepter : ActionBase
     public bool Condition()
     {
         //requests are empty 
-        if (data.request_id < 0)
+        if (data.Target_id < 0)
         {
             return false;
         }
@@ -42,8 +42,10 @@ public class ResponseAccepter : ActionBase
     public void Init()
     {
         //get path
-        Debug.Log(data.request_id);
-        response = Response.GetResponse(data.request_id, transform, data);
+        //Debug.Log(data.Request_id);
+        response = Response.GetResponse(data.Request_id, transform, data);
+        if(response == null)
+            Debug.Log("Evil");
         response.Init();
         running = true;
     }
@@ -52,8 +54,8 @@ public class ResponseAccepter : ActionBase
         running = response.RunResponse();
         if(running == false)
         {
-            data.requester_id = -1;
-            data.request_id = -1;
+            data.Request_id = -1;
+            data.Target_id = -1;
         }
     }
 

@@ -17,12 +17,12 @@ public class FoodManager : MonoBehaviour
     private float food_spawn_timer;
     private BoundsInt map_border;
 
-    private Dictionary<Vector3Int, int> food_tiles = new Dictionary<Vector3Int, int>();
-    public static FoodManager instance { get; private set; }
+    private Dictionary<Vector3Int, int> food_tiles = new();
+    public static FoodManager Instance { get; private set; }
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
+        Instance = this;
         map_border = world_map.cellBounds;
         food_spawn_timer = food_spawn_rate;
         //food_tiles.Add(new Vector3Int(0, 3), 10);
@@ -50,15 +50,17 @@ public class FoodManager : MonoBehaviour
         int max_tries = 2;
 
 
-         while (food_tiles.ContainsKey(new Vector3Int(random_x, random_y)) && max_tries > 0)
+        while (food_tiles.ContainsKey(new Vector3Int(random_x, random_y)) && max_tries > 0)
         {
             random_x = Random.Range(map_border.xMin, map_border.xMax);
             random_y = Random.Range(map_border.yMin, map_border.yMax);
             max_tries--;
         }
-
+        
         food_tiles.Add(new Vector3Int(random_x, random_y), 10);
         food_map.SetTile(new Vector3Int(random_x, random_y), food_tile);
+        
+        
 
     }
 

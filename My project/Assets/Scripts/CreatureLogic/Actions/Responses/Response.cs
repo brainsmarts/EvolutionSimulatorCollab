@@ -21,12 +21,11 @@ public interface Response
     public static bool Reply(int action_id, CreatureData data)
     {
         switch (action_id)
-        {
+        {  
             case 100:
                 //add in some breeding modifier if they have one
-                if (data.energy > 30)
+                if (data.Current_energy > 30)
                 {
-                    data.energy -= 30;
                     return true;
                 }
                 break;
