@@ -111,4 +111,8 @@ public class CreatureManager : MonoBehaviour
         bool response = recipient.SendRequest(request_id, creature_id);
         return response;
     }
+
+    public List<BaseCreature> GetCreatures(){
+        return list_of_creatures;
+    }
 }

@@ -65,7 +65,6 @@ public class FindFood : ActionBase
                 next_location = path.Pop();
                 data.DecreaseEnergy(1);
             }
-            
         }
         var step = 0.5f * Time.deltaTime; // calculate distance to move
         transform.position = Vector3.MoveTowards(transform.position, grid.GetCellCenterWorld(next_location), step);

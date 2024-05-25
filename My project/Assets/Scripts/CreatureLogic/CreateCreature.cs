@@ -34,6 +34,8 @@ public class CreateCreature : MonoBehaviour
         creature.transform.parent = creature_holder.transform;
         creature.AddComponent<BaseCreature>();
 
+        //creature.transform.position = 
+
         BaseCreature baseCreature = creature.GetComponent<BaseCreature>();
         
         baseCreature.SetData(data);
@@ -53,13 +55,10 @@ public class CreateCreature : MonoBehaviour
         //get data from both parents
         CreatureData data1 = CreatureManager.instance.GetData(parent1);
         CreatureData data2 = CreatureManager.instance.GetData(parent2);
-        if(data1 == null || data2 == null){
-            Debug.Log("Null Data");
-        }
         //create new Data using the data from parent 1 and parent 2
         
         //create new game object 
-        GameObject new_creature = new();
+        GameObject new_creature = new();    
         
         CreatureData data3 = CreateData(data1, data2, new_creature.transform);
         new_creature.AddComponent<BaseCreature>();

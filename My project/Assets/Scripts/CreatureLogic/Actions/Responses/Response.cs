@@ -24,7 +24,7 @@ public interface Response
         {  
             case 100:
                 //add in some breeding modifier if they have one
-                if (data.Current_energy > 30)
+                if (data.Current_energy > 30 && Time.time - data.TimeBorn > 60)
                 {
                     return true;
                 }

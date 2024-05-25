@@ -20,13 +20,15 @@ public class BaseCreature : MonoBehaviour
     //private Animator animator;
     private Grid grid;
     private bool idle = true;
+    private float TimeBorn;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        TimeBorn = Time.time;
         grid = GameManager.Instance.getGrid();
-
+        
         data.Target_id = -1;
         data.Request_id = -1;
 

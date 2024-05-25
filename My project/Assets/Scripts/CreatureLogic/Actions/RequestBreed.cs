@@ -54,6 +54,9 @@ public class RequestBreed : ActionBase
         if(data.Current_energy < 30){
             return false;
         }
+        if (Time.time - data.TimeBorn < 60){
+            return false;
+        }
 
         last_time_accessed = Time.time;
         Dictionary<int, int> creatures_in_range = CreatureManager.instance.GetCreaturesInRange(grid.WorldToCell(creature_transform.position), data.Sight_range, CreatureValues.CUR_ENERGY);
