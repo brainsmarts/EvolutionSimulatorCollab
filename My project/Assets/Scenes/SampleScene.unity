@@ -12808,7 +12808,7 @@ MonoBehaviour:
   food_map: {fileID: 503291662}
   world_map: {fileID: 1104449226}
   food_tile: {fileID: 11400000, guid: 9e18965972e160fd58c53efc0ceb46f0, type: 2}
-  food_spawn_rate: 20
+  food_spawn_rate: 5
 --- !u!114 &1424265770
 MonoBehaviour:
   m_ObjectHideFlags: 0
