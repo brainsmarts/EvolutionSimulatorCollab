@@ -37,8 +37,13 @@ public class FindFood : ActionBase
     public bool Condition()
     {
         //Debug.Log("Is There food?");
+        if (data.IsFull())
+        {
+            return false;
+        }
         food_location = FoodManager.Instance.FoodInRange(grid.WorldToCell(transform.position), data.Sight_range);
         return !food_location.Equals(grid.WorldToCell(transform.position));
+
     }
 
 

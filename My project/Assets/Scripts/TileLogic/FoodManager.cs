@@ -7,6 +7,8 @@ using UnityEngine.Tilemaps;
 public class FoodManager : MonoBehaviour
 {
     [SerializeField]
+    private int StartingFoodAmount;
+    [SerializeField]
     private Tilemap food_map;
     [SerializeField]
     private Tilemap world_map;
@@ -25,8 +27,10 @@ public class FoodManager : MonoBehaviour
         Instance = this;
         map_border = world_map.cellBounds;
         food_spawn_timer = food_spawn_rate;
-        //food_tiles.Add(new Vector3Int(0, 3), 10);
-        //food_map.SetTile(new Vector3Int(0,3), food_tile);
+        for(int i = 0; i < StartingFoodAmount; i++)
+        {
+            RandomAddFood();
+        }
     }
 
     // Update is called once per frame
@@ -70,11 +74,10 @@ public class FoodManager : MonoBehaviour
         foreach (KeyValuePair<Vector3Int, int> food in food_tiles)
         {
             //Debug.Log(food.Key);
-            int distance = Mathf.Abs(food.Key.x - player_position.x) + Mathf.Abs(food.Key.y - player_position.y);
-
-            if(distance <= range) {
-                food_location = food.Key;
-                return food_location;
+            float distance = Vector3Int.Distance(player_position, food.Key);
+            if (distance <= range) {
+                if (distance < Vector3Int.Distance(player_position, food_location) || food_location == player_position)
+                    food_location = food.Key;
             }
         }
         //Debug.Log("Food Not Found");

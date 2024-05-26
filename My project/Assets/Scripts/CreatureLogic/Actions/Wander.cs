@@ -42,8 +42,14 @@ public class Wander : ActionBase
     public void Init()
     {
         List <Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
-        int random = Random.Range(0, neighboors.Count); 
+        int random = Random.Range(0, neighboors.Count);
         new_position = neighboors[random];
+        while (GameManager.Instance.OutOfBounds(new_position))
+        {
+            random = Random.Range(0, neighboors.Count);
+            new_position = neighboors[random];
+        }
+        
         data.DecreaseEnergy(1);
         running = true;
     }

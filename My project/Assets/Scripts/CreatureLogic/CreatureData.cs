@@ -6,11 +6,15 @@ using UnityEngine;
 
 public class CreatureData
 {
+    [SerializeField]
     public int ID {get;}
+    [SerializeField]
     public int Energy {get;}
-
+    [SerializeField]
     public int Current_energy {get; private set;}
+    [SerializeField]
     public int Health {get;}
+    [SerializeField]
     public int Sight_range {get;}
     public int Target_id {get; set;}
     public int Request_id {get; set;}
@@ -39,5 +43,12 @@ public class CreatureData
 
     public void IncreaseEnergy(int amount){
         Current_energy += amount;
+        if (Current_energy > Energy) {
+            Current_energy = Energy;
+        }
+    }
+    public bool IsFull()
+    {
+        return Current_energy >= Energy;
     }
 }

@@ -6,14 +6,19 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.Tilemaps;
 
 public class CreateCreature : MonoBehaviour
 {
 
     public static CreateCreature instance;
+    [SerializeField] private Tilemap world_map;
+    private BoundsInt map_border;
+
     void Start(){
         instance = this;
         id = 2;
+        map_border = world_map.cellBounds;
         SpawnCreature();
         SpawnCreature();
         SpawnCreature();
@@ -27,10 +32,15 @@ public class CreateCreature : MonoBehaviour
     //at x position
     public void SpawnCreature(){
         id++;
+        int random_x = Random.Range(map_border.xMin, map_border.xMax);
+        int random_y = Random.Range(map_border.yMin, map_border.yMax);
         GameObject creature =new();
         CreatureData data = new(id, 70, 5, 8);
         data.SetActions(CreateActions(creature.transform, data));
-        
+
+        creature.transform.position = GameManager.Instance.getGrid().CellToWorld(new
+            Vector3Int(Random.Range(map_border.xMin, map_border.xMax), Random.Range(map_border.yMin, map_border.yMax)));
+
         creature.transform.parent = creature_holder.transform;
         creature.AddComponent<BaseCreature>();
 
