@@ -59,6 +59,9 @@ public class FindFood : ActionBase
     {
         if (Vector3.Distance(transform.position, grid.GetCellCenterWorld(next_location)) < 0.01f)
         {
+            if (FoodManager.Instance.IsFoodThere(food_location) == false) { 
+                running = false;
+            }
             if (grid.WorldToCell(transform.position).Equals(food_location))
             {
                 int energy_gained = FoodManager.Instance.EatFood(food_location);
@@ -71,7 +74,7 @@ public class FindFood : ActionBase
                 data.DecreaseEnergy(1);
             }
         }
-        var step = 0.5f * Time.deltaTime; // calculate distance to move
+        var step = 0.05f * data.Speed * Time.deltaTime; // calculate distance to move
         transform.position = Vector3.MoveTowards(transform.position, grid.GetCellCenterWorld(next_location), step);
     }
 

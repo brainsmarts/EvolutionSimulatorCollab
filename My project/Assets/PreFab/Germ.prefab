@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6946150302638784858}
   - component: {fileID: 709892124053408616}
   - component: {fileID: 7409154117193882875}
+  - component: {fileID: -1131809880918280989}
   m_Layer: 0
   m_Name: Germ
   m_TagString: Untagged
@@ -98,16 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b43d13004b01d498a6deeee1853750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data:
-    ID: 0
-    energy: 0
-    health: 0
-    sight_range: 4
-    target_id: 0
-    request_id: 0
-    requester_id: 0
   idle_length: 4
-  animator: {fileID: 7409154117193882875}
 --- !u!95 &7409154117193882875
 Animator:
   serializedVersion: 5
@@ -129,3 +121,38 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!58 &-1131809880918280989
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5522564398718287589}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.08

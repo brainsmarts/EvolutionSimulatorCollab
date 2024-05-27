@@ -29,7 +29,7 @@ public class FoodManager : MonoBehaviour
         food_spawn_timer = food_spawn_rate;
         for(int i = 0; i < StartingFoodAmount; i++)
         {
-            RandomAddFood();
+            RandomAddFood();    
         }
     }
 
@@ -61,7 +61,7 @@ public class FoodManager : MonoBehaviour
             max_tries--;
         }
         
-        food_tiles.Add(new Vector3Int(random_x, random_y), 10);
+        food_tiles.Add(new Vector3Int(random_x, random_y), 15);
         food_map.SetTile(new Vector3Int(random_x, random_y), food_tile);
         
         
@@ -104,5 +104,10 @@ public class FoodManager : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public bool IsFoodThere(Vector3Int location)
+    {
+        return food_tiles.ContainsKey(location);
     }
 }

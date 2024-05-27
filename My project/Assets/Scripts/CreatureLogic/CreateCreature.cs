@@ -19,10 +19,10 @@ public class CreateCreature : MonoBehaviour
         instance = this;
         id = 2;
         map_border = world_map.cellBounds;
-        SpawnCreature();
-        SpawnCreature();
-        SpawnCreature();
-        SpawnCreature();
+        for(int i = 0; i < 10; i++)
+        {
+            SpawnCreature();
+        }
     }
     public Sprite sprite;
     private int id;
@@ -35,7 +35,7 @@ public class CreateCreature : MonoBehaviour
         int random_x = Random.Range(map_border.xMin, map_border.xMax);
         int random_y = Random.Range(map_border.yMin, map_border.yMax);
         GameObject creature =new();
-        CreatureData data = new(id, 70, 5, 8);
+        CreatureData data = new(id, 100, Random.Range(1,10), 8);
         data.SetActions(CreateActions(creature.transform, data));
 
         creature.transform.position = GameManager.Instance.getGrid().CellToWorld(new
@@ -97,10 +97,10 @@ public class CreateCreature : MonoBehaviour
         max = parent1.Sight_range > parent2.Sight_range ? parent1.Sight_range : parent2.Sight_range;
         int sight_range = Random.Range(min -1, max +1);
 
-        min = parent1.Health < parent2.Health ? parent1.Health : parent2.Health;
-        max = parent1.Health > parent2.Health ? parent1.Health : parent2.Health;
-        int health = Random.Range(min -1, max +1);
-        data = new(id, energy, health, sight_range);
+        min = parent1.Speed < parent2.Speed ? parent1.Speed : parent2.Speed;
+        max = parent1.Speed  > parent2.Speed ? parent1.Speed : parent2.Speed;
+        int speed = Random.Range(min -1, max +1);
+        data = new(id, energy, speed, sight_range);
         data.SetActions(CreateActions(creature_transform, data));
         return data;
     }

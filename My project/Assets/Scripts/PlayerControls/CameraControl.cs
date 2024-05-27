@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraControl : MonoBehaviour
@@ -8,28 +9,60 @@ public class CameraControl : MonoBehaviour
     Camera cam;
     [SerializeField]
     float speed;
+    [SerializeField]
+    private Transform following;
+    [SerializeField]
+    private bool is_follwing = false;
+
+    public static CameraControl Instance { get; private set; }
     // Start is called before the first frame update
     void Start()
     {
-        
+        Instance = this;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(is_follwing == false)
+        {
+            PlayerControl();
+        } else
+        {
+            FollowCreature();
+        }
+        Zoom();
+    }
+
+    private void PlayerControl()
+    {
         float h_input = Input.GetAxisRaw("Horizontal");
         float v_input = Input.GetAxisRaw("Vertical");
 
-        if(h_input != 0)
+        if (h_input != 0)
         {
             cam.transform.position = new Vector3(transform.position.x + (speed * h_input * Time.deltaTime), transform.position.y, transform.position.z);
         }
 
         if (v_input != 0)
         {
-            cam.transform.position = new Vector3(transform.position.x , transform.position.y + (speed * v_input * Time.deltaTime), transform.position.z);
+            cam.transform.position = new Vector3(transform.position.x, transform.position.y + (speed * v_input * Time.deltaTime), transform.position.z);
         }
+    }
 
+    public void SetFollow(Transform creature)
+    {
+        is_follwing = true;
+        following = creature; 
+    }
+
+    private void FollowCreature()
+    {
+        cam.transform.position = new Vector3(following.position.x, following.position.y, transform.position.z);
+    }
+
+    private void Zoom()
+    {
         float scroll = Input.mouseScrollDelta.y;
 
         if (scroll > 0 && cam.orthographicSize > .3)

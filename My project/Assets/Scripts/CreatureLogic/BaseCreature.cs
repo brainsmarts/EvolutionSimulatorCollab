@@ -7,10 +7,10 @@ public class BaseCreature : MonoBehaviour
 {
     
     [SerializeField]
-    private CreatureData data;
+    public CreatureData data {get; private set;}
 
     private List<ActionBase> actions;
-    private ActionBase current_action = null;
+    public ActionBase current_action { get; private set; }
 
     [SerializeField]
     private float idle_length = 4;
@@ -97,7 +97,6 @@ public class BaseCreature : MonoBehaviour
                 current_action = null;
                 ResetTimer();
             }
-            
         }
         if(data.Current_energy <= 0){
             Die();
@@ -116,14 +115,9 @@ public class BaseCreature : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public Vector3 GetGridPosition()
+    public Vector3 GetPosition()
     {
         return transform.position;
-    }
-
-    public ref CreatureData GetStats()
-    {
-        return ref data;
     }
 
     public int GetID()
@@ -135,10 +129,7 @@ public class BaseCreature : MonoBehaviour
     {
         bool response = Response.Reply(request_id, data);
         if(response == false)
-            return false;
-
-        if (current_action != null)
-            return false;
+            return false;   
 
         if(data.Request_id != -1)
             return false;
@@ -161,7 +152,10 @@ public class BaseCreature : MonoBehaviour
         this.data = data;
     }
 
-    public CreatureData GetData(){
-        return data;
+    public int GetAge()
+    {
+        return (int)((Time.time - TimeBorn) / 60); 
     }
+
+    public Transform GetTransform() { return transform; }
 }

@@ -10,8 +10,6 @@ public class CreatureManager : MonoBehaviour
     public static CreatureManager instance;
     private List<BaseCreature> list_of_creatures;
 
-    [SerializeField]
-    TextMeshProUGUI debug_text;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,19 +39,13 @@ public class CreatureManager : MonoBehaviour
 
     public void FixedUpdate()
     {
-        string display = "";
-        foreach (BaseCreature creature in list_of_creatures)
-        {
-            display += creature.GetID() + " " + creature.GetCurrentAction() + " " + creature.GetData().Current_energy +"\n";
-        }
-        debug_text.text = display;
     }
     public List<int> GetCreatureInRange(Vector3Int position, int range)
     {
         List<int> creatures_in_range = new List<int>();
         foreach(BaseCreature creature in list_of_creatures)
         {
-            if (Vector3Int.Distance(position, GameManager.Instance.getGrid().WorldToCell(creature.GetGridPosition())) <= range)
+            if (Vector3Int.Distance(position, GameManager.Instance.getGrid().WorldToCell(creature.GetPosition())) <= range)
             {
                 creatures_in_range.Add(creature.GetID()); 
             }
@@ -66,9 +58,9 @@ public class CreatureManager : MonoBehaviour
         Dictionary<int, int> creatures = new Dictionary<int, int>();
         foreach (BaseCreature creature in list_of_creatures)
         {
-            if (Vector3Int.Distance(position, GameManager.Instance.getGrid().WorldToCell(creature.GetGridPosition())) <= range)
+            if (Vector3Int.Distance(position, GameManager.Instance.getGrid().WorldToCell(creature.GetPosition())) <= range)
             {
-                creatures.Add(creature.GetID(), CreatureValues.GetValue(creature.GetStats(), value));
+                creatures.Add(creature.GetID(), CreatureValues.GetValue(creature.data, value));
             }
         }
         return creatures;
@@ -77,13 +69,24 @@ public class CreatureManager : MonoBehaviour
     public Vector3Int GetCreaturePosition(int creature_id)
     {
         BaseCreature creature = GetCreature(creature_id);
-        Debug.Log(creature_id);
-        if(creature == null)
-            Debug.Log("Another evil");
-        return GameManager.Instance.getGrid().WorldToCell(creature.GetGridPosition());
+        return GameManager.Instance.getGrid().WorldToCell(creature.GetPosition());
+    }
+
+    public int GetCreatureAt(Vector3Int position)
+    {
+        foreach(BaseCreature creature in list_of_creatures)
+        {
+            Vector3Int creature_position = GameManager.Instance.getGrid().WorldToCell(creature.GetPosition());
+            if (creature_position.x == position.x && creature_position.y == position.y)
+            {
+                return creature.GetID();
+            }
+        }
+
+        return -1;
     }
     
-    private BaseCreature GetCreature(int creature_id)
+    public BaseCreature GetCreature(int creature_id)
     {
         foreach(BaseCreature creature in list_of_creatures)
         {
@@ -99,7 +102,7 @@ public class CreatureManager : MonoBehaviour
         foreach(BaseCreature creature in list_of_creatures)
         {
             if(creature.GetID() == creature_id)
-                return creature.GetData();
+                return creature.data;
         }
 
         return null;

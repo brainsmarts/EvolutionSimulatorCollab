@@ -30,6 +30,10 @@ public class GameManager : MonoBehaviour
 
     public bool OutOfBounds(Vector3Int position)
     {
+        /*
+        Debug.Log(position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny);
+        Debug.Log(position.x + " :" + maxx + " " + minx);
+        Debug.Log(position.y + " :" + maxy + " " + miny);*/
         return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
     }
 

@@ -51,7 +51,7 @@ public class ResponseAccepter : ActionBase
     }
     public void Run()
     {
-        running = response.RunResponse();
+        running = response.RunResponse();   
         if(running == false)
         {
             data.Request_id = -1;

@@ -16,16 +16,18 @@ public class CreatureData
     public int Health {get;}
     [SerializeField]
     public int Sight_range {get;}
+    [SerializeField]
+    public int Speed { get; private set;}
     public int Target_id {get; set;}
     public int Request_id {get; set;}
 
     public float TimeBorn {get; private set;}
     public List<ActionBase> Actions {get; private set;}
 
-    public CreatureData(int ID, int energy, int health, int sight_range){
+    public CreatureData(int ID, int energy, int speed, int sight_range){
         this.ID = ID;
         this.Energy = energy;
-        this.Health = health;
+        this.Speed = speed;
         this.Sight_range = sight_range;
         this.Actions = Actions;
         Current_energy = energy/2;
