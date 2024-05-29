@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FindFood : ActionBase
@@ -7,8 +8,9 @@ public class FindFood : ActionBase
     public int weight { get; }
     public Transform transform;
     public CreatureData data;
+    private RangeScanner scanner;
     private Grid grid;
-    private Vector3Int food_location;
+    private FoodScript food;
     private Vector3Int next_location;
     private Stack<Vector3Int> path;
     public bool running;
@@ -29,6 +31,12 @@ public class FindFood : ActionBase
         this.data = data;
     }
 
+    public void SetScanner(ref RangeScanner rangeScanner)
+    {
+        
+        scanner = rangeScanner;
+    }
+
     public bool IsRunning()
     {
         return running;
@@ -41,16 +49,24 @@ public class FindFood : ActionBase
         {
             return false;
         }
-        food_location = FoodManager.Instance.FoodInRange(grid.WorldToCell(transform.position), data.Sight_range);
-        return !food_location.Equals(grid.WorldToCell(transform.position));
 
+        food = scanner.GetNearestFood();  
+        return food != null;
     }
 
 
     public void Init()
     {
         //List<Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
-        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position),food_location);
+        //Debug.Log("Food Init");
+        if (food == null)
+        {
+            running = false;
+            return;
+        }
+            
+        
+        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(food.GetPosition())) ;
         next_location = path.Pop();
         running = true;
     }
@@ -59,12 +75,13 @@ public class FindFood : ActionBase
     {
         if (Vector3.Distance(transform.position, grid.GetCellCenterWorld(next_location)) < 0.01f)
         {
-            if (FoodManager.Instance.IsFoodThere(food_location) == false) { 
+            if (food == null) { 
                 running = false;
+                    return;
             }
-            if (grid.WorldToCell(transform.position).Equals(food_location))
+            if (food.InRange(transform))
             {
-                int energy_gained = FoodManager.Instance.EatFood(food_location);
+                int energy_gained = food.EatFood();
                 data.IncreaseEnergy(energy_gained);
                 running = false;
             }

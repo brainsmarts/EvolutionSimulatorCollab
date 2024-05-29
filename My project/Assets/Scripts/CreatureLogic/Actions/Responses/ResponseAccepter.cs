@@ -9,6 +9,8 @@ public class ResponseAccepter : ActionBase
     private CreatureData data;
     private bool running = false;
     Response response;
+    private RangeScanner scanner;
+
     public ResponseAccepter()
     {
 
@@ -17,6 +19,11 @@ public class ResponseAccepter : ActionBase
     public void SetData(CreatureData data)
     {
         this.data = data;
+    }
+
+    public void SetScanner(ref RangeScanner rangeScanner)
+    {
+        scanner = rangeScanner;
     }
     public int weight { get; }
     public bool IsRunning()
@@ -28,7 +35,7 @@ public class ResponseAccepter : ActionBase
     public bool Condition()
     {
         //requests are empty 
-        if (data.Target_id < 0)
+        if (data.Target == null)
         {
             return false;
         }
@@ -55,7 +62,7 @@ public class ResponseAccepter : ActionBase
         if(running == false)
         {
             data.Request_id = -1;
-            data.Target_id = -1;
+            data.Target = null;
         }
     }
 

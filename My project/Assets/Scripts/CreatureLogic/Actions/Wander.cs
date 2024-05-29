@@ -39,6 +39,11 @@ public class Wander : ActionBase
         this.data = data;
     }
 
+    public void SetScanner(ref RangeScanner scanner)
+    {
+
+    }
+
     public bool IsRunning()
     {
         return running; 

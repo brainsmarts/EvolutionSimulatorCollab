@@ -21,10 +21,11 @@ public class RequestBreed : ActionBase
 
     //have time since last time bred
     //have cooldown for when breed can be requested again
-    private Grid grid;
+    private RangeScanner scanner;
+
     public RequestBreed()
     {
-        grid = GameManager.Instance.getGrid();
+ 
     }
     public void SetTransform(Transform transform)
     {
@@ -33,6 +34,12 @@ public class RequestBreed : ActionBase
     public void SetData(CreatureData data)
     {
         this.data = data;
+    }
+
+    public void SetScanner(ref RangeScanner rangeScanner)
+    {
+        Debug.Log(rangeScanner);
+        scanner = rangeScanner;
     }
     public int weight { get; }
     public bool IsRunning()
@@ -44,6 +51,7 @@ public class RequestBreed : ActionBase
     //public 
     public bool Condition()
     {
+        return false;
         //if breeding timer is still going on, then return false
         //only reset the timer if a creature is found and a request is sent
         //multiply it by some enviroment and trait in the future
@@ -54,20 +62,24 @@ public class RequestBreed : ActionBase
         if(data.Current_energy < 30){
             return false;
         }
-        if (Time.time - data.TimeBorn < 60){
+        if ((int)((Time.time - data.TimeBorn) / 60) < 3)
+        {
             return false;
         }
 
         last_time_accessed = Time.time;
-        Dictionary<int, int> creatures_in_range = CreatureManager.instance.GetCreaturesInRange(grid.WorldToCell(creature_transform.position), data.Sight_range, CreatureValues.CUR_ENERGY);
-        foreach (KeyValuePair<int, int> creature in creatures_in_range)
+        if (scanner == null)
         {
-            if (creature.Value > 30)
+            Debug.Log("Inserting Null Scanner");
+        }
+        HashSet<BaseCreature> creatures_in_range = scanner.GetCreatures();
+
+        foreach (BaseCreature creature in creatures_in_range)
+        {
+            if (creature.data.Current_energy > 30)
             {
-                if(creature.Key == data.ID)
-                    return false;
-                data.Target_id = creature.Key;
-                Debug.Log(data.ID + " Has found " + data.Target_id + "To be very breedable");
+                data.Target = creature;
+                Debug.Log(data.ID + " Has found " + data.Target + "To be very breedable");
                 return true;
             }
         }
@@ -79,15 +91,15 @@ public class RequestBreed : ActionBase
     public void Init()
     {
         //get path
-        running = CreatureManager.instance.SendRequest(action_id, data.Target_id);
+        data.Target.SendRequest(action_id, data.ID);
         if (running == false)
         {
             //Debug.Log("Request Declined");
-            data.Target_id = -1;
+            data.Target = null;
             return;
         }
 
-        Debug.Log("Breeding with " + data.Target_id);
+        Debug.Log("Breeding with " + data.Target);
         data.DecreaseEnergy(30);
        
         //breedable_locale = CreatureManager.instance.GetCreaturePosition(breedable);
@@ -96,8 +108,8 @@ public class RequestBreed : ActionBase
     }
     public void Run()
     {
-        CreateCreature.instance.BreedNewCreature(data.ID, data.Target_id);
-        data.Target_id = -1;
+        CreateCreature.instance.BreedNewCreature(data.ID, data.Target.data.ID);
+        data.Target = null;
         running = false;
         /*
         //wait for a nudge back that the request has been accepted

@@ -24,6 +24,9 @@ public class CameraControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (following == null)
+            is_follwing = false;
+
         if(is_follwing == false)
         {
             PlayerControl();
@@ -41,12 +44,12 @@ public class CameraControl : MonoBehaviour
 
         if (h_input != 0)
         {
-            cam.transform.position = new Vector3(transform.position.x + (speed * h_input * Time.deltaTime), transform.position.y, transform.position.z);
+            cam.transform.position = new Vector3(transform.position.x + (speed * h_input * (Time.deltaTime/Time.timeScale)), transform.position.y, transform.position.z);
         }
 
         if (v_input != 0)
         {
-            cam.transform.position = new Vector3(transform.position.x, transform.position.y + (speed * v_input * Time.deltaTime), transform.position.z);
+            cam.transform.position = new Vector3(transform.position.x, transform.position.y + (speed * v_input * (Time.deltaTime / Time.timeScale)), transform.position.z);
         }
     }
 
@@ -56,10 +59,16 @@ public class CameraControl : MonoBehaviour
         following = creature; 
     }
 
+    public void StopFollow()
+    {
+        is_follwing = false;
+    }
     private void FollowCreature()
     {
+
         cam.transform.position = new Vector3(following.position.x, following.position.y, transform.position.z);
     }
+
 
     private void Zoom()
     {
@@ -74,4 +83,5 @@ public class CameraControl : MonoBehaviour
             cam.orthographicSize += .2f;
         }
     }
+
 }

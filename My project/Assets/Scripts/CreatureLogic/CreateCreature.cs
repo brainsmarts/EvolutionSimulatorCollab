@@ -14,12 +14,14 @@ public class CreateCreature : MonoBehaviour
     public static CreateCreature instance;
     [SerializeField] private Tilemap world_map;
     private BoundsInt map_border;
+    [SerializeField] GameObject creature_prefab;
+    [SerializeField] int NumOfStartingCreatures;
 
     void Start(){
         instance = this;
         id = 2;
         map_border = world_map.cellBounds;
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < NumOfStartingCreatures; i++)
         {
             SpawnCreature();
         }
@@ -34,28 +36,26 @@ public class CreateCreature : MonoBehaviour
         id++;
         int random_x = Random.Range(map_border.xMin, map_border.xMax);
         int random_y = Random.Range(map_border.yMin, map_border.yMax);
-        GameObject creature =new();
+        GameObject creature =Instantiate(creature_prefab, creature_holder.transform);
+        
+
         CreatureData data = new(id, 100, Random.Range(1,10), 8);
-        data.SetActions(CreateActions(creature.transform, data));
+        BaseCreature baseCreature = creature.GetComponent<BaseCreature>();
+        data.SetActions(CreateActions(creature.transform, data, creature.GetComponentInChildren<RangeScanner>()));
 
         creature.transform.position = GameManager.Instance.getGrid().CellToWorld(new
             Vector3Int(Random.Range(map_border.xMin, map_border.xMax), Random.Range(map_border.yMin, map_border.yMax)));
-
-        creature.transform.parent = creature_holder.transform;
-        creature.AddComponent<BaseCreature>();
-
         //creature.transform.position = 
 
-        BaseCreature baseCreature = creature.GetComponent<BaseCreature>();
+        
         
         baseCreature.SetData(data);
 
-        creature.AddComponent<SpriteRenderer>();
         SpriteRenderer spriteR = creature.GetComponent<SpriteRenderer>();
         spriteR.sprite = sprite;
         spriteR.sortingOrder = 5;
         //Instantiate(creature);
-        Debug.Log("Creature Created");
+        //Debug.Log("Creature Created");
 
         CreatureManager.instance.AddCreature(baseCreature);
     }
@@ -68,23 +68,26 @@ public class CreateCreature : MonoBehaviour
         //create new Data using the data from parent 1 and parent 2
         
         //create new game object 
-        GameObject new_creature = new();    
-        
-        CreatureData data3 = CreateData(data1, data2, new_creature.transform);
-        new_creature.AddComponent<BaseCreature>();
+        GameObject new_creature = Instantiate(creature_prefab, creature_holder.transform);
+        BaseCreature creature_base = new_creature.GetComponent<BaseCreature>();
+
+        if (new_creature.GetComponentInChildren<RangeScanner>() == null) {
+            Debug.Log("New Creatures Do Not Have Range Scanner");
+        }
+        CreatureData data3 = CreateData(data1, data2, new_creature.transform, new_creature.GetComponentInChildren<RangeScanner>());
+
         //set the new data to the creature and add base creature component
         //new_creature.GetComponent<BaseCreature>().SetData(new());
-        BaseCreature creature_base = new_creature.GetComponent<BaseCreature>();
+        //BaseCreature creature_base = new_creature.GetComponent<BaseCreature>();
         creature_base.SetData(data3);
         CreatureManager.instance.AddCreature(creature_base);
 
-        new_creature.AddComponent<SpriteRenderer>();
         SpriteRenderer spriteR = new_creature.GetComponent<SpriteRenderer>();
         spriteR.sprite = sprite;
         spriteR.sortingOrder = 5;
     }
 
-    private CreatureData CreateData(CreatureData parent1, CreatureData parent2, Transform creature_transform){
+    private CreatureData CreateData(CreatureData parent1, CreatureData parent2, Transform creature_transform, RangeScanner scanner){
         CreatureData data;
         int min;
         int max;
@@ -101,27 +104,31 @@ public class CreateCreature : MonoBehaviour
         max = parent1.Speed  > parent2.Speed ? parent1.Speed : parent2.Speed;
         int speed = Random.Range(min -1, max +1);
         data = new(id, energy, speed, sight_range);
-        data.SetActions(CreateActions(creature_transform, data));
+        data.SetActions(CreateActions(creature_transform, data, scanner));
         return data;
     }
 
-    private List<ActionBase> CreateActions(Transform creature_transform,CreatureData data){
+    private List<ActionBase> CreateActions(Transform creature_transform, CreatureData data, RangeScanner scanner){
         List<ActionBase> actions = new();
         FindFood find_food = new();
         find_food.SetData(data);
         find_food.SetTransform(creature_transform);
+        find_food.SetScanner(ref scanner);
 
         Wander wander = new();
         wander.SetData(data);
         wander.SetTransform(creature_transform);
+        wander.SetScanner(ref scanner);
 
         ResponseAccepter response = new();
         response.SetData(data);
         response.SetTransform(creature_transform);
+        response.SetScanner(ref scanner);   
 
         RequestBreed rb = new();
         rb.SetData(data);
         rb.SetTransform(creature_transform);
+        rb.SetScanner(ref scanner);
 
         actions.Add(response);
         actions.Add(find_food);

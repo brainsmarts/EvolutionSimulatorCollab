@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     private Grid grid;
     [SerializeField]
     private Tilemap world_map;
+    [SerializeField]
+    private float time_scale = 1;
     private BoundsInt map_border;
     private int minx, maxx, miny, maxy; 
     // Start is called before the first frame update
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
         map_border = world_map.cellBounds;
         minx = map_border.xMin; maxx = map_border.xMax;
         miny = map_border.yMin; maxy = map_border.yMax;
+        Time.timeScale = time_scale;    
     }
 
     // Update is called once per frame
@@ -30,10 +33,6 @@ public class GameManager : MonoBehaviour
 
     public bool OutOfBounds(Vector3Int position)
     {
-        /*
-        Debug.Log(position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny);
-        Debug.Log(position.x + " :" + maxx + " " + minx);
-        Debug.Log(position.y + " :" + maxy + " " + miny);*/
         return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
     }
 

@@ -12,8 +12,8 @@ public class FoodManager : MonoBehaviour
     private Tilemap food_map;
     [SerializeField]
     private Tilemap world_map;
-    [SerializeField]
-    private TileBase food_tile;
+    [SerializeField] Transform food_holder;
+    [SerializeField] private GameObject food;
     [SerializeField]
     private float food_spawn_rate = 5f;
     private float food_spawn_timer;
@@ -60,15 +60,16 @@ public class FoodManager : MonoBehaviour
             random_y = Random.Range(map_border.yMin, map_border.yMax);
             max_tries--;
         }
-        
-        food_tiles.Add(new Vector3Int(random_x, random_y), 15);
-        food_map.SetTile(new Vector3Int(random_x, random_y), food_tile);
-        
-        
 
+        //food_tiles.Add(new Vector3Int(random_x, random_y), 15);
+        GameObject something = Instantiate(food);
+        something.transform.position = GameManager.Instance.getGrid().CellToWorld(new Vector3Int(random_x, random_y));
+        something.transform.parent = food_holder;
+
+        //food_map.SetTile(new Vector3Int(random_x, random_y), food_tile);
     }
 
-    public Vector3Int FoodInRange(Vector3Int player_position, int range)
+    private Vector3Int FoodInRange(Vector3Int player_position, int range)
     {
         Vector3Int food_location = player_position;
         foreach (KeyValuePair<Vector3Int, int> food in food_tiles)
@@ -84,7 +85,7 @@ public class FoodManager : MonoBehaviour
         return food_location;
     }
 
-    public int EatFood(Vector3Int location)
+    private int EatFood(Vector3Int location)
     {
         KeyValuePair<Vector3Int, int> food_to_eat = default;
         foreach (KeyValuePair<Vector3Int, int> food in food_tiles)
@@ -106,7 +107,7 @@ public class FoodManager : MonoBehaviour
         return 0;
     }
 
-    public bool IsFoodThere(Vector3Int location)
+    private bool IsFoodThere(Vector3Int location)
     {
         return food_tiles.ContainsKey(location);
     }

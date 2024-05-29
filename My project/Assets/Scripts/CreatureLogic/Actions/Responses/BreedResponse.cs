@@ -15,18 +15,19 @@ public class BreedResponse : Response
     }
     public void Init()
     {
-        breeder_id = data.Target_id;
+        breeder_id = data.Target.data.ID;
         grid = GameManager.Instance.getGrid();
         data.DecreaseEnergy(30);
     }
 
     public bool RunResponse()
     {
-        if (CreatureManager.instance.GetCreaturePosition(breeder_id).Equals(grid.WorldToCell(transform.position)))
-        {
-            Debug.Log("Breeded");
-            return false;
-        }
+        //if creature is in set distance
+       
+        
+        Debug.Log("Breeded");
+        return true;
+        
         return true;
     }
 }

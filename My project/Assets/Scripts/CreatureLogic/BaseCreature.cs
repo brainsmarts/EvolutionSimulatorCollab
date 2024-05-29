@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class BaseCreature : MonoBehaviour
 {
-    
+
     [SerializeField]
-    public CreatureData data {get; private set;}
+    public CreatureData data;
+    [SerializeField]
+    private RangeScanner scanner;
 
     private List<ActionBase> actions;
     public ActionBase current_action { get; private set; }
@@ -20,40 +22,20 @@ public class BaseCreature : MonoBehaviour
     //private Animator animator;
     private Grid grid;
     private bool idle = true;
-    private float TimeBorn;
+   
 
 
     // Start is called before the first frame update
     void Start()
     {
-        TimeBorn = Time.time;
+
         grid = GameManager.Instance.getGrid();
-        
-        data.Target_id = -1;
+        scanner.SetRange(data.Sight_range);
+        data.Target = null;
         data.Request_id = -1;
 
-        //setting all possible actions
-        actions = new List<ActionBase>();
-        FindFood find_food = new();
-        find_food.SetData(data);
-        find_food.SetTransform(transform);
+        scanner.Enable();
 
-        Wander wander = new();
-        wander.SetData(data);
-        wander.SetTransform(transform);
-
-        ResponseAccepter response = new();
-        response.SetData(data);
-        response.SetTransform(transform);
-
-        RequestBreed rb = new();
-        rb.SetData(data);
-        rb.SetTransform(transform);
-
-        actions.Add(response);
-        actions.Add(rb);
-        actions.Add(find_food);
-        actions.Add(wander);
     }
 
 
@@ -120,11 +102,6 @@ public class BaseCreature : MonoBehaviour
         return transform.position;
     }
 
-    public int GetID()
-    {
-        return data.ID;
-    }
-
     internal bool SendRequest(int request_id, int creature_id)
     {
         bool response = Response.Reply(request_id, data);
@@ -135,7 +112,11 @@ public class BaseCreature : MonoBehaviour
             return false;
         
 
-        data.Target_id = creature_id;
+        data.Target = scanner.Find(creature_id);
+        if(data.Target == null)
+        {
+            return false;
+        }
         data.Request_id = request_id;
         return true;
     }
@@ -150,12 +131,13 @@ public class BaseCreature : MonoBehaviour
 
     public void SetData(CreatureData data){
         this.data = data;
+        this.actions = data.Actions;
     }
 
     public int GetAge()
     {
-        return (int)((Time.time - TimeBorn) / 60); 
+        return (int)((Time.time - data.TimeBorn) / 60); 
     }
-
+    
     public Transform GetTransform() { return transform; }
 }

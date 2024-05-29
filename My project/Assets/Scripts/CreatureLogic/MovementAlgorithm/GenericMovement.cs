@@ -101,12 +101,16 @@ public class GenericMovement
     public static List<Vector3Int> GetNeighboors(Vector3Int current_position)
     {
         int current_x = current_position.x;
-        int current_y = current_position.y; 
-        int[,] directions = new int[4, 2] {
+        int current_y = current_position.y;
+        int[,] directions = new int[8, 2] {
             {1,0},
             {-1,0},
             {0,1},
             {0,-1},
+            {1,1},
+            {-1,1},
+            {1,-1},
+            {-1,-1}
         };
         List<Vector3Int> neighboors = new List<Vector3Int>();
         for (int i = 0; i < directions.GetLength(0); i++)
