@@ -21,14 +21,14 @@ public class FoodScript : MonoBehaviour
         return transform.position;
     }
 
-    public bool InRange(Transform creature)
+    public bool InRange(Rigidbody2D creature)
     {
-        Collider2D[] results = Physics2D.OverlapCircleAll(transform.position, 0.24f);
+        Collider2D[] results = Physics2D.OverlapCircleAll(transform.position, 0.16f);
         foreach(Collider2D collider in results)
         {
             if (collider.CompareTag("Creature"))
             {
-                if(collider.transform == creature)
+                if(collider.attachedRigidbody == creature)
                 {
                     return true;
                 }

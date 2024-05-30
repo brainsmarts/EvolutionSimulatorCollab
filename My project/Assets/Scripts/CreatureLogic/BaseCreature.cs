@@ -16,7 +16,11 @@ public class BaseCreature : MonoBehaviour
 
     [SerializeField]
     private float idle_length = 4;
-    private float idle_timer;
+    private float idle_timer = 0;
+
+    [SerializeField]
+    private float metobolism_rate = 10;
+    private float metobolism_timer = 0;
 
     //[SerializeField]
     //private Animator animator;
@@ -42,9 +46,28 @@ public class BaseCreature : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        DoAction();
+        CheckMetobolism();
+        CheckDeath();
+    }
 
+    private void CheckMetobolism()
+    {
+        if (metobolism_timer > metobolism_rate)
+        {
+            data.DecreaseEnergy(1);
+            metobolism_timer = 0;
+        }
+        else
+        {
+            metobolism_timer += Time.deltaTime; 
+        }
+    }
+    private void DoAction()
+    {
         if (idle)
         {
+            //Debug.Log("Idle");
             if (idle_timer > 0)
             {
                 idle_timer -= Time.deltaTime;
@@ -56,11 +79,11 @@ public class BaseCreature : MonoBehaviour
         }
         else
         {
-            if(current_action == null)
+            if (current_action == null)
             {
                 foreach (ActionBase action in actions)
                 {
-                    if (action.Condition()) 
+                    if (action.Condition())
                     {
                         action.Init();
                         current_action = action;
@@ -77,11 +100,9 @@ public class BaseCreature : MonoBehaviour
             else
             {
                 current_action = null;
+                idle = true;
                 ResetTimer();
             }
-        }
-        if(data.Current_energy <= 0){
-            Die();
         }
     }
 
@@ -91,10 +112,13 @@ public class BaseCreature : MonoBehaviour
         idle_timer = idle_length;
     }
 
-    private void Die()
+    private void CheckDeath()
     {
-        CreatureManager.instance.RemoveCreature(this);
-        Destroy(gameObject);
+        if (data.Current_energy <= 0)
+        {
+            CreatureManager.instance.RemoveCreature(this);
+            Destroy(gameObject);
+        } 
     }
 
     public Vector3 GetPosition()

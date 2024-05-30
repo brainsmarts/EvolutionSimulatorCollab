@@ -5,7 +5,7 @@ using UnityEngine;
 public class ResponseAccepter : ActionBase
 {
     // Start is called before the first frame update
-    private Transform transform;
+    private Rigidbody2D rb;
     private CreatureData data;
     private bool running = false;
     Response response;
@@ -15,7 +15,7 @@ public class ResponseAccepter : ActionBase
     {
 
     }
-    public void SetTransform(Transform transform) => this.transform = transform;
+    public void SetRigidBody(Rigidbody2D rb) => this.rb = rb;
     public void SetData(CreatureData data)
     {
         this.data = data;
@@ -39,7 +39,7 @@ public class ResponseAccepter : ActionBase
         {
             return false;
         }
-        Debug.Log("Response Accepted");
+        //Debug.Log("Response Accepted");
         
         //return response.GetCondition();
         return true;
@@ -50,9 +50,7 @@ public class ResponseAccepter : ActionBase
     {
         //get path
         //Debug.Log(data.Request_id);
-        response = Response.GetResponse(data.Request_id, transform, data);
-        if(response == null)
-            Debug.Log("Evil");
+        response = Response.GetResponse(data.Request_id, rb, data, scanner);
         response.Init();
         running = true;
     }

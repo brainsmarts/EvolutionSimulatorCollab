@@ -4,12 +4,12 @@ using UnityEngine;
 
 public interface Response 
 {
-    public static Response GetResponse(int action_id, Transform transform, CreatureData data)
+    public static Response GetResponse(int action_id, Rigidbody2D rb, CreatureData data, RangeScanner scanner)
     {
         switch (action_id)
         {
             case 100: // breed request
-                Response response = new BreedResponse(transform, data);
+                Response response = new BreedResponse(rb, data, scanner);
                 return response;
 
             case 101:

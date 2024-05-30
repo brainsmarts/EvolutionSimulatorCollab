@@ -23,15 +23,18 @@ public class CreatureData
 
     public float TimeBorn {get; private set;}
     public List<ActionBase> Actions {get; private set;}
+    public Color Color { get; private set;}
 
-    public CreatureData(int ID, int energy, int speed, int sight_range){
+    public CreatureData(int ID, int energy, int speed, int sight_range, Color color)
+    {
         this.ID = ID;
         this.Energy = energy;
         this.Speed = speed;
         this.Sight_range = sight_range;
         this.Actions = Actions;
-        Current_energy = energy/2;
+        Current_energy = energy / 2;
         TimeBorn = Time.time;
+        Color = color;
     }
 
     public void SetActions(List<ActionBase> actions){

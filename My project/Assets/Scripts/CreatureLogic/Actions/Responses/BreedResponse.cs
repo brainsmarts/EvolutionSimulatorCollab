@@ -5,13 +5,15 @@ using UnityEngine;
 public class BreedResponse : Response
 {
     private int breeder_id;
-    private Transform transform;
+    private Rigidbody2D rb;
     private CreatureData data;
     private Grid grid;
-    public BreedResponse(Transform transform, CreatureData data)
+    RangeScanner scanner;
+    public BreedResponse(Rigidbody2D rb, CreatureData data, RangeScanner scanner)
     {
-        this.transform = transform;
+        this.rb = rb;
         this.data = data;
+        this.scanner = scanner;
     }
     public void Init()
     {
@@ -25,9 +27,8 @@ public class BreedResponse : Response
         //if creature is in set distance
        
         
-        Debug.Log("Breeded");
-        return true;
-        
-        return true;
+        Debug.Log("Breeded by:" + data.Target.data.ID);
+
+        return false;
     }
 }

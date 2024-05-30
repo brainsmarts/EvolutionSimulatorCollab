@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface ActionBase 
 {
-    public void SetTransform(Transform transform);
+    public void SetRigidBody(Rigidbody2D rb);
     public void SetData(CreatureData data);
     public void SetScanner(ref RangeScanner scanner);
     public int weight { get; }
