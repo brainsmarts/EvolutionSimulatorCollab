@@ -164,4 +164,9 @@ public class BaseCreature : MonoBehaviour
     }
     
     public Transform GetTransform() { return transform; }
+
+    private void OnMouseDown()
+    {
+        DebugManager.Instance.Display(this);
+    }
 }

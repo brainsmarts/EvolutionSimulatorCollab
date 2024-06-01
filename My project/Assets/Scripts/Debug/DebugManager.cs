@@ -6,26 +6,31 @@ using UnityEngine.UI;
 
 public class DebugManager : MonoBehaviour
 {
+    public static DebugManager Instance;
     private BaseCreature _creature;
     [SerializeField]
     private Canvas _canvas;
     [SerializeField]
     private TMP_Text _text;
+    [SerializeField]
+    CameraControl camcon;
     private bool info_opened = false;
     // Start is called before the first frame update
     //Hello Testing Testing
     void Start()
     {
+        Instance = this;
         _canvas.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //int id = CreatureManager.instance.GetCreatureAt();
-        //_creatu
-        //re = CreatureManager.instance.GetCreature(id);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _canvas.enabled = false;
+            camcon.StopFollow();
+        }
     }
 
     private void FixedUpdate()
@@ -38,6 +43,14 @@ public class DebugManager : MonoBehaviour
         if(info_opened) {
             SetTextInfo();
         }
+    }
+
+    public void Display(BaseCreature _creature)
+    {
+        info_opened = true;
+        this._creature = _creature;
+        _canvas.enabled = true;
+        camcon.SetFollow(_creature.GetTransform());
     }
 
     private void SetTextInfo()
