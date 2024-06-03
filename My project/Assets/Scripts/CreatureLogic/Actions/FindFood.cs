@@ -50,7 +50,13 @@ public class FindFood : ActionBase
         {
             return false;
         }
-
+        if(food != null)
+        {
+            if(food == scanner.GetNearestFood())
+            {
+                return false;
+            }
+        }
         food = scanner.GetNearestFood();  
         return food != null;
     }
@@ -75,12 +81,16 @@ public class FindFood : ActionBase
             running = false;
             return;
         }
-        next_location = grid.GetCellCenterWorld(path.Pop());
+        //next_location = grid.GetCellCenterWorld(path.Pop());
+        
         running = true;
     }
 
     public void Run()
     {
+        data.SetNewTargetLocation(grid.WorldToCell(food.GetPosition()));
+        running = false;
+        /*
         if (Vector2.Distance(rb.position, next_location) < 0.05f)
         {
             if (food == null) {
@@ -117,7 +127,7 @@ public class FindFood : ActionBase
                 left = rb.velocity.y > 0 ? .1f : -.1f;
                 rb.AddForce(new(0, left));
             }
-        }
+        }*/
     }
 
     override

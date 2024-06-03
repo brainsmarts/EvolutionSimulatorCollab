@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using UnityEngine;
 
 public class Wander : ActionBase
@@ -26,6 +27,9 @@ public class Wander : ActionBase
             {-1,1}, 
             {-1,-1},
         };
+
+
+    private Stack<Vector3Int> path;
 
     public Wander()
     {
@@ -61,14 +65,16 @@ public class Wander : ActionBase
     public void Init()
     {
         //Debug.Log("Wander Start");
-        steps = Random.Range(1, 6);
+        steps = 1;
         new_position = GetNextPath();
+        //path = GenericMovement.MoveTo();
         data.DecreaseEnergy(1);
         running = true;
     }
 
     public void Run()
     {
+        /*
         if(Vector2.Distance(new_position, rb.position) < .01f)
         {
             //Debug.Log(new_position + " " + rb.position);
@@ -107,7 +113,8 @@ public class Wander : ActionBase
             }
         }
         //Debug.Log(data.Speed);
-        
+        */
+
     }
 
     private Vector3 GetNextPath()
@@ -120,7 +127,7 @@ public class Wander : ActionBase
         for (int i = 0; i < directions.GetLength(0); i++)
         {
             Vector3Int neighboor = new Vector3Int(current_x + directions[i, 0], current_y + directions[i, 1]);
-            if (!GameManager.Instance.OutOfBounds(neighboor))
+            if (!GameManager.Instance.OutOfBounds(neighboor) && GameManager.Instance.IsNotRock(neighboor))
             {
                 neighboors.Add(new Vector3Int(current_x + directions[i, 0], current_y + directions[i, 1]));
             }

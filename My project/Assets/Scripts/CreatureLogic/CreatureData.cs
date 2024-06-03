@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class CreatureData
 {
+    public Vector3 Target_Location{get; set;}
+    public Stack<Vector3Int> path { get; private set; }
+    public Transform transform { get; }
     [SerializeField]
     public int ID {get;}
     [SerializeField]
@@ -25,7 +28,7 @@ public class CreatureData
     public List<ActionBase> Actions {get; private set;}
     public Color Color { get; private set;}
 
-    public CreatureData(int ID, int energy, int speed, int sight_range, Color color)
+    public CreatureData(int ID, int energy, int speed, int sight_range, Color color, Transform transform)
     {
         this.ID = ID;
         this.Energy = energy;
@@ -35,6 +38,7 @@ public class CreatureData
         Current_energy = energy / 2;
         TimeBorn = Time.time;
         Color = color;
+        this.transform = transform;
     }
 
     public void SetActions(List<ActionBase> actions){
@@ -55,5 +59,15 @@ public class CreatureData
     public bool IsFull()
     {
         return Current_energy >= Energy;
+    }
+
+    public void SetNewTargetLocation(Vector3 new_location)
+    {
+        Target_Location = new_location;
+        Grid grid = GameManager.Instance.getGrid();
+        
+        Debug.Log("Transform " + transform.position == null);
+
+        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(Target_Location));
     }
 }

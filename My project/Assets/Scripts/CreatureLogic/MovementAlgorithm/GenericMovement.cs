@@ -13,11 +13,15 @@ public class GenericMovement
             return new Stack<Vector3Int>();
         
         Stack<Vector3Int> shurmp = new Stack<Vector3Int>();
-        int[,] directions = new int[4, 2] {
+        int[,] directions = new int[8, 2] {
             {1,0},
             {-1,0},
             {0,1},
             {0,-1},
+            {1,1},
+            {-1,1},
+            {1,-1},
+            {-1,-1}
         };
         List<int[]> visited = new List<int[]>();
         List<int[]> prev = new List<int[]>();
@@ -38,12 +42,12 @@ public class GenericMovement
             int current_y = yq.Peek();
             //Debug.Log("From x , y " + current_x + ", " + current_y);
 
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < 8; i++)
             {
                 int[] neighboor = new int[2] { current_x + directions[i, 0], current_y + directions[i, 1] };
-                
-                
-                if (InBounds(neighboor, minx, miny, maxx, maxy) && !HasVisited(neighboor, visited))
+
+                //  Debug.Log(neighboor[0] + " " + neighboor[1]);
+                if (InBounds(neighboor, minx, miny, maxx, maxy) && !HasVisited(neighboor, visited) && GameManager.Instance.IsNotRock(new Vector3Int(neighboor[0] , neighboor[1])))
                 {
                     //Debug.Log("Neighboor Added " + neighboor[0] + ", " + neighboor[1]);
                     xq.Enqueue(current_x + directions[i,0]);
@@ -61,11 +65,6 @@ public class GenericMovement
             current_x = xq.Dequeue();
             current_y = yq.Dequeue();
         }
-        //start at a, find all neighboors and add to queue
-        //then find all the neighboors of those neighboors
-        //continue until b is found, then return the pathway
-
-        Debug.Log("Path Not Found");
         return new Stack<Vector3Int>();
        
     }

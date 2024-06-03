@@ -35,18 +35,14 @@ public class CreateCreature : MonoBehaviour
         id++;
         int random_x = Random.Range(map_border.xMin, map_border.xMax);
         int random_y = Random.Range(map_border.yMin, map_border.yMax);
-        GameObject creature =Instantiate(creature_prefab, creature_holder.transform);
-        
+    
+            
+        GameObject creature =Instantiate(creature_prefab, GameManager.Instance.getGrid().CellToWorld(new Vector3Int(Random.Range(map_border.xMin, map_border.xMax), Random.Range(map_border.yMin, map_border.yMax))), Quaternion.identity);
+        creature.transform.parent = creature_holder.transform;
 
-        CreatureData data = new(id, 100, Random.Range(30,40), 8, new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
+        CreatureData data = new(id, 100, Random.Range(30,40), 8, new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)), creature.transform);
         BaseCreature baseCreature = creature.GetComponent<BaseCreature>();
         data.SetActions(CreateActions(creature.GetComponent<Rigidbody2D>(), data, creature.GetComponentInChildren<RangeScanner>()));
-
-        creature.transform.position = GameManager.Instance.getGrid().CellToWorld(new
-            Vector3Int(Random.Range(map_border.xMin, map_border.xMax), Random.Range(map_border.yMin, map_border.yMax)));
-        //creature.transform.position = 
-
-        
         
         baseCreature.SetData(data);
         SpriteRenderer spriteR = creature.GetComponent<SpriteRenderer>();
@@ -55,6 +51,7 @@ public class CreateCreature : MonoBehaviour
         //Debug.Log("Creature Created");
 
         CreatureManager.instance.AddCreature(baseCreature);
+        creature.name = baseCreature.data.ID.ToString();
     }
 
     public void BreedNewCreature(int parent1, int parent2){
@@ -82,6 +79,7 @@ public class CreateCreature : MonoBehaviour
         
         SpriteRenderer spriteR = new_creature.GetComponent<SpriteRenderer>();
         spriteR.color = data3.Color;
+        new_creature.name = creature_base.data.ID.ToString();
 
     }
 
@@ -103,7 +101,7 @@ public class CreateCreature : MonoBehaviour
         int speed = Random.Range(min -1, max +1);
 
         Color color = Color.Lerp(parent1.Color, parent2.Color, 1);
-        data = new(id, energy, speed, sight_range, color);
+        data = new(id, energy, speed, sight_range, color, creature_rb.transform);
         data.SetActions(CreateActions(creature_rb, data, scanner));
         return data;
     }
@@ -130,9 +128,9 @@ public class CreateCreature : MonoBehaviour
         rb.SetRigidBody(creature_rb);
         rb.SetScanner(ref scanner);
 
-        actions.Add(response);
+        //actions.Add(response);
         actions.Add(find_food);
-        actions.Add(rb);
+        //actions.Add(rb);
         actions.Add(wander);
         return actions;
     }

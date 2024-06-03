@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scanner: {fileID: 2703241657494187349}
+  rb: {fileID: -4535732149646844776}
   idle_length: 4
   metobolism_rate: 10
 --- !u!50 &-4535732149646844776

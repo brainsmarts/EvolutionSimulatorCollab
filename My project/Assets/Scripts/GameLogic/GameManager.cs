@@ -12,6 +12,13 @@ public class GameManager : MonoBehaviour
     private Tilemap world_map;
     [SerializeField]
     private float time_scale = 1;
+
+    [SerializeField]
+    private Tilemap terrain_map;
+
+    [SerializeField]
+    private Tilemap border_map;
+
     private BoundsInt map_border;
     private int minx, maxx, miny, maxy; 
     // Start is called before the first frame update
@@ -36,6 +43,9 @@ public class GameManager : MonoBehaviour
         return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
     }
 
-    
+    public bool IsNotRock(Vector3Int position)
+    {
+        return terrain_map.GetTile(position) == null ? true : false;
+    }
 }
 
