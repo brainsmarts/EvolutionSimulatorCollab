@@ -131,7 +131,7 @@ public class CreateCreature : MonoBehaviour
         //actions.Add(response);
         actions.Add(find_food);
         //actions.Add(rb);
-        actions.Add(wander);
+        //actions.Add(wander);
         return actions;
     }
 }

@@ -16,9 +16,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Tilemap terrain_map;
 
-    [SerializeField]
-    private Tilemap border_map;
-
     private BoundsInt map_border;
     private int minx, maxx, miny, maxy; 
     // Start is called before the first frame update
@@ -40,6 +37,10 @@ public class GameManager : MonoBehaviour
 
     public bool OutOfBounds(Vector3Int position)
     {
+        Debug.Log("Out of bounds Logging");
+        Debug.Log(position.x + " " + position.y);
+        Debug.Log(minx + " " + miny);
+        Debug.Log(maxx + " " + maxy);
         return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
     }
 

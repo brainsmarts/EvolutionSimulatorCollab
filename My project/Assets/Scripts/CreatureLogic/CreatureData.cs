@@ -66,7 +66,7 @@ public class CreatureData
         Target_Location = new_location;
         Grid grid = GameManager.Instance.getGrid();
         
-        Debug.Log("Transform " + transform.position == null);
+        //Debug.Log("Transform " + transform.position == null);
 
         path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(Target_Location));
     }

@@ -65,6 +65,8 @@ public class GenericMovement
             current_x = xq.Dequeue();
             current_y = yq.Dequeue();
         }
+
+        Debug.Log("No Path Found");
         return new Stack<Vector3Int>();
        
     }

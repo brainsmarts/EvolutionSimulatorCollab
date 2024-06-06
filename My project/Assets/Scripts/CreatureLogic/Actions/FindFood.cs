@@ -65,24 +65,13 @@ public class FindFood : ActionBase
     public void Init()
     {
         //List<Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
-        //Debug.Log("Food Init");
+        Debug.Log("Food Init");
         if (food == null)
         {
             rb.velocity *= 0;
             running = false;
             return;
         }
-            
-        
-        path = GenericMovement.MoveTo(grid.WorldToCell(rb.position), grid.WorldToCell(food.GetPosition()));
-        if(path.Count <= 0)
-        {
-            rb.velocity *= 0;
-            running = false;
-            return;
-        }
-        //next_location = grid.GetCellCenterWorld(path.Pop());
-        
         running = true;
     }
 
@@ -90,6 +79,7 @@ public class FindFood : ActionBase
     {
         data.SetNewTargetLocation(grid.WorldToCell(food.GetPosition()));
         running = false;
+        Debug.Log("Find Food Run");
         /*
         if (Vector2.Distance(rb.position, next_location) < 0.05f)
         {

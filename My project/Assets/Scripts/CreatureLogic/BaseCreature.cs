@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class BaseCreature : MonoBehaviour
@@ -31,7 +32,7 @@ public class BaseCreature : MonoBehaviour
     private Grid grid;
     private bool idle = true;
    
-
+        
 
     // Start is called before the first frame update
     void Start()
@@ -39,18 +40,12 @@ public class BaseCreature : MonoBehaviour
         //set a random location to head to
         grid = GameManager.Instance.getGrid();
 
-        Vector3Int current_position = grid.WorldToCell(transform.position);
-        data.Target_Location = grid.CellToWorld(new Vector3Int(current_position.x + UnityEngine.Random.Range(5,10), 
-            current_position.y + UnityEngine.Random.Range(5,10)));
-
-        data.SetNewTargetLocation(current_position);
-        next_location = data.path.Pop();
+        //data.SetNewTargetLocation(current_position);
+        //next_location = data.path.Pop();
         scanner.SetRange(data.Sight_range);
         data.Target = null;
         data.Request_id = -1;
-
         scanner.Enable();
-
     }
 
 
@@ -76,21 +71,42 @@ public class BaseCreature : MonoBehaviour
     }
     private void DoAction()
     {
-        if(current_action != null)
+        foreach (ActionBase action in actions)
         {
-            if (current_action.IsRunning() == false)
+            if (action.Condition())
             {
-                current_action = null;
+                action.Init();
+                action.Run();
+                break;
             }
         }
-        
 
-        if(Vector3.Distance(transform.position, grid.CellToWorld(next_location)) < 0.05f)
+        //move this to Data since this check should only happen once
+        if (data.path == null)
         {
-            //set new location if final location is reached
-            //else pop
-            if(Vector3.Distance(transform.position, data.Target_Location) < 0.05f)
+            Vector3Int current_position = grid.WorldToCell(transform.position);
+            Vector3Int new_target_position = new Vector3Int(current_position.x + UnityEngine.Random.Range(5, 10),
+                    current_position.y + UnityEngine.Random.Range(5, 10));
+            
+            if (GameManager.Instance.OutOfBounds(new_target_position))
             {
+                Debug.Log(new_target_position);
+                Debug.Log("Out of bounds");
+            }
+
+            data.SetNewTargetLocation(grid.CellToWorld(new_target_position));
+            next_location = data.path.Pop();
+            Debug.Log(next_location);
+            Debug.Log(grid.WorldToCell(data.Target_Location));
+            return;
+        }
+
+        if(grid.WorldToCell(transform.position).Equals(grid.WorldToCell(next_location)))
+        {
+            Debug.Log("Next Location Reached");
+            if(Vector3.Distance(transform.position, data.Target_Location) < 0.09f)
+            {
+                Debug.Log("Final Location Reached");
                 Vector3Int current_position = grid.WorldToCell(transform.position);
                 data.Target_Location = grid.CellToWorld(new Vector3Int(current_position.x + UnityEngine.Random.Range(5, 10),
                     current_position.y + UnityEngine.Random.Range(5, 10)));
@@ -101,24 +117,7 @@ public class BaseCreature : MonoBehaviour
             }
         }
 
-        foreach (ActionBase action in actions)
-        {
-            if (action.Condition())
-            {
-                action.Init();
-                current_action = action;
-                break;
-            }
-        }
-        if (current_action != null)
-        {
-            if (current_action.IsRunning())
-            {
-                current_action.Run();
-            }
-        }
-
-        rb.velocity = new Vector2(data.Target_Location.x - transform.position.x, data.Target_Location.y - transform.position.y).normalized * data.Speed * Time.deltaTime;
+        rb.velocity = new Vector2(next_location.x - transform.position.x, next_location.y - transform.position.y).normalized * data.Speed / 2 * Time.deltaTime;
     }
 
     private void ResetTimer()
@@ -131,6 +130,7 @@ public class BaseCreature : MonoBehaviour
     {
         if (data.Current_energy <= 0)
         {
+            Debug.Log("I Died");
             CreatureManager.instance.RemoveCreature(this);
             Destroy(gameObject);
         } 

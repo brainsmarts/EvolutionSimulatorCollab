@@ -7,7 +7,6 @@ public interface ActionBase
     public void SetRigidBody(Rigidbody2D rb);
     public void SetData(CreatureData data);
     public void SetScanner(ref RangeScanner scanner);
-    public int weight { get; }
     public bool IsRunning();
     // Start is called before the first frame update
     //public 
