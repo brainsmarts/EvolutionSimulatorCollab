@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class BaseCreature : MonoBehaviour
 {
@@ -16,12 +19,9 @@ public class BaseCreature : MonoBehaviour
     
     private Vector3Int next_location;
 
-    private List<ActionBase> actions;
-    public ActionBase current_action { get; private set; }
+    //private List<ActionBase> actions;
+    //public ActionBase current_action { get; private set; }
 
-    [SerializeField]
-    private float idle_length = 4;
-    private float idle_timer = 0;
 
     [SerializeField]
     private float metobolism_rate = 10;
@@ -53,6 +53,7 @@ public class BaseCreature : MonoBehaviour
     void FixedUpdate()
     {
         DoAction();
+        MoveToTargetLocation();
         CheckMetobolism();
         CheckDeath();
     }
@@ -71,7 +72,7 @@ public class BaseCreature : MonoBehaviour
     }
     private void DoAction()
     {
-        foreach (ActionBase action in actions)
+        foreach (ActionBase action in data.Actions)
         {
             if (action.Condition())
             {
@@ -80,50 +81,22 @@ public class BaseCreature : MonoBehaviour
                 break;
             }
         }
-
-        //move this to Data since this check should only happen once
-        if (data.path == null)
-        {
-            Vector3Int current_position = grid.WorldToCell(transform.position);
-            Vector3Int new_target_position = new Vector3Int(current_position.x + UnityEngine.Random.Range(5, 10),
-                    current_position.y + UnityEngine.Random.Range(5, 10));
-            
-            if (GameManager.Instance.OutOfBounds(new_target_position))
-            {
-                Debug.Log(new_target_position);
-                Debug.Log("Out of bounds");
-            }
-
-            data.SetNewTargetLocation(grid.CellToWorld(new_target_position));
-            next_location = data.path.Pop();
-            Debug.Log(next_location);
-            Debug.Log(grid.WorldToCell(data.Target_Location));
-            return;
-        }
-
-        if(grid.WorldToCell(transform.position).Equals(grid.WorldToCell(next_location)))
-        {
-            Debug.Log("Next Location Reached");
-            if(Vector3.Distance(transform.position, data.Target_Location) < 0.09f)
-            {
-                Debug.Log("Final Location Reached");
-                Vector3Int current_position = grid.WorldToCell(transform.position);
-                data.Target_Location = grid.CellToWorld(new Vector3Int(current_position.x + UnityEngine.Random.Range(5, 10),
-                    current_position.y + UnityEngine.Random.Range(5, 10)));
-            }
-            else
-            {
-                next_location = data.path.Pop();
-            }
-        }
-
-        rb.velocity = new Vector2(next_location.x - transform.position.x, next_location.y - transform.position.y).normalized * data.Speed / 2 * Time.deltaTime;
     }
 
-    private void ResetTimer()
-    {
-        idle = true;
-        idle_timer = idle_length;
+    private void MoveToTargetLocation(){
+        //Debug.Log(grid.WorldToCell(transform.position) + " < > " + grid.WorldToCell(data.Target_Location));
+        if(Vector3.Distance(transform.position,data.Target_Location) < 0.01){
+            Debug.Log("Target Reached");
+            if(data.path.Count == 0){
+                Debug.Log("New Path Set");
+                data.SetRandomPath();
+            } else{
+                Debug.Log("Next In Path");
+                data.NextInPath();
+            }
+        }
+
+        rb.velocity = new Vector2(data.Target_Location.x - transform.position.x, data.Target_Location.y - transform.position.y).normalized * data.Speed * Time.deltaTime;
     }
 
     private void CheckDeath()
@@ -131,7 +104,7 @@ public class BaseCreature : MonoBehaviour
         if (data.Current_energy <= 0)
         {
             Debug.Log("I Died");
-            CreatureManager.instance.RemoveCreature(this);
+            //CreatureManager.instance.RemoveCreature(this);
             Destroy(gameObject);
         } 
     }
@@ -160,17 +133,8 @@ public class BaseCreature : MonoBehaviour
         return true;
     }
 
-    public string GetCurrentAction()
-    {
-        if (current_action == null)
-            return "idle";
-
-        return current_action.ToString();
-    }
-
     public void SetData(CreatureData data){
         this.data = data;
-        this.actions = data.Actions;
     }
 
     public int GetAge()

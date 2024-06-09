@@ -113,11 +113,6 @@ public class CreateCreature : MonoBehaviour
         find_food.SetRigidBody(creature_rb);
         find_food.SetScanner(ref scanner);
 
-        Wander wander = new();
-        wander.SetData(data);
-        wander.SetRigidBody(creature_rb);
-        wander.SetScanner(ref scanner);
-
         ResponseAccepter response = new();
         response.SetData(data);
         response.SetRigidBody(creature_rb);

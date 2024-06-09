@@ -37,16 +37,16 @@ public class GameManager : MonoBehaviour
 
     public bool OutOfBounds(Vector3Int position)
     {
-        Debug.Log("Out of bounds Logging");
-        Debug.Log(position.x + " " + position.y);
-        Debug.Log(minx + " " + miny);
-        Debug.Log(maxx + " " + maxy);
+        Debug.Log("Out of bounds Logging + /nDesiredPosiiton: "+ position.x + " " + position.y + 
+            "\nMinimumBoundry" + minx + " " + miny +
+            "\nMaximumBoundry" + maxx + " " + maxy);
         return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
     }
 
     public bool IsNotRock(Vector3Int position)
     {
-        return terrain_map.GetTile(position) == null ? true : false;
+        //Debug.Log("Position " + position + " Is not rock " + terrain_map.GetTile(position) == null);
+        return terrain_map.GetTile(position) == null;
     }
 }
 

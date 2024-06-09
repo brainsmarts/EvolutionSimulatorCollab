@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using UnityEngine;
 [Serializable]
 
@@ -28,6 +29,8 @@ public class CreatureData
     public List<ActionBase> Actions {get; private set;}
     public Color Color { get; private set;}
 
+    private Grid grid;
+
     public CreatureData(int ID, int energy, int speed, int sight_range, Color color, Transform transform)
     {
         this.ID = ID;
@@ -39,6 +42,8 @@ public class CreatureData
         TimeBorn = Time.time;
         Color = color;
         this.transform = transform;
+        grid = GameManager.Instance.getGrid();
+        SetRandomPath();
     }
 
     public void SetActions(List<ActionBase> actions){
@@ -63,11 +68,32 @@ public class CreatureData
 
     public void SetNewTargetLocation(Vector3 new_location)
     {
-        Target_Location = new_location;
-        Grid grid = GameManager.Instance.getGrid();
-        
-        //Debug.Log("Transform " + transform.position == null);
+        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(new_location));
+        Target_Location = grid.CellToWorld(path.Pop());
+    }
 
-        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(Target_Location));
+    private void SetNewTargetLocation(Vector3Int new_location)
+    {
+        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position),new_location);
+        Target_Location = grid.CellToWorld(path.Pop());
+    }
+
+    public void NextInPath(){
+        Target_Location = grid.CellToWorld(path.Pop());
+    }
+
+    public void SetRandomPath(){
+        int negativex = UnityEngine.Random.Range(0f,1f) > .5f ? -1 : 1;
+        int negativey = UnityEngine.Random.Range(0f,1f) > .5f ? -1 : 1;
+        Debug.Log(negativex);
+        Vector3Int position = grid.WorldToCell(transform.position);
+        position.x += negativex * UnityEngine.Random.Range(5,10);
+        position.y += negativey * UnityEngine.Random.Range(5,10);
+        //Debug.Log(GameManager.Instance.OutOfBounds(position));
+        Debug.Log(GameManager.Instance.IsNotRock(position));
+        if(GameManager.Instance.OutOfBounds(position) || !GameManager.Instance.IsNotRock(position)){
+            return;
+        }
+        SetNewTargetLocation(position);
     }
 }
