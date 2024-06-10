@@ -102,7 +102,7 @@ public class RequestBreed : ActionBase
     public void Run()
     {
         //Debug.Log("Borning A Creature");
-        CreateCreature.instance.BreedNewCreature(data.ID, data.Target.data.ID);
+        CreateCreature.instance.BreedNewCreature(data, data.Target.data);
         data.Target = null;
         running = false;
         /*

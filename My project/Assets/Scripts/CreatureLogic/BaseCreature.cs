@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -17,10 +18,8 @@ public class BaseCreature : MonoBehaviour
     [SerializeField]
     private Rigidbody2D rb;
     
-    private Vector3Int next_location;
-
     //private List<ActionBase> actions;
-    //public ActionBase current_action { get; private set; }
+    public ActionBase current_action { get; private set; }
 
 
     [SerializeField]
@@ -30,9 +29,7 @@ public class BaseCreature : MonoBehaviour
     //[SerializeField]
     //private Animator animator;
     private Grid grid;
-    private bool idle = true;
-   
-        
+
 
     // Start is called before the first frame update
     void Start()
@@ -72,15 +69,24 @@ public class BaseCreature : MonoBehaviour
     }
     private void DoAction()
     {
-        foreach (ActionBase action in data.Actions)
-        {
-            if (action.Condition())
-            {
-                action.Init();
-                action.Run();
-                break;
+        if(current_action == null){
+            foreach (ActionBase action in data.Actions)
+                {
+                    if (action.Condition())
+                    {
+                        action.Init();
+                        current_action = action;
+                        break;
+                    }
+                }
+        }else{
+            if(current_action.IsRunning()){
+                current_action.Run();
+            }else{
+                current_action = null;
             }
         }
+     
     }
 
     private void MoveToTargetLocation(){

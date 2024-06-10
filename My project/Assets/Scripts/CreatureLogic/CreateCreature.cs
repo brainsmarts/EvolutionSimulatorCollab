@@ -35,9 +35,9 @@ public class CreateCreature : MonoBehaviour
         id++;
         int random_x = Random.Range(map_border.xMin, map_border.xMax);
         int random_y = Random.Range(map_border.yMin, map_border.yMax);
-    
+        Vector3 random_position = GameManager.Instance.getGrid().CellToWorld(new Vector3Int(random_x, random_y));
             
-        GameObject creature =Instantiate(creature_prefab, GameManager.Instance.getGrid().CellToWorld(new Vector3Int(Random.Range(map_border.xMin, map_border.xMax), Random.Range(map_border.yMin, map_border.yMax))), Quaternion.identity);
+        GameObject creature = Instantiate(creature_prefab, random_position, Quaternion.identity);
         creature.transform.parent = creature_holder.transform;
 
         CreatureData data = new(id, 100, Random.Range(30,40), 8, new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)), creature.transform);
@@ -50,33 +50,18 @@ public class CreateCreature : MonoBehaviour
         //Instantiate(creature);
         //Debug.Log("Creature Created");
 
-        CreatureManager.instance.AddCreature(baseCreature);
         creature.name = baseCreature.data.ID.ToString();
     }
 
-    public void BreedNewCreature(int parent1, int parent2){
+    public void BreedNewCreature(CreatureData data1, CreatureData data2){
         id++;
-        //get data from both parents
-        CreatureData data1 = CreatureManager.instance.GetData(parent1);
-        CreatureData data2 = CreatureManager.instance.GetData(parent2);
-        //create new Data using the data from parent 1 and parent 2
-        
-        //create new game object 
+
         GameObject new_creature = Instantiate(creature_prefab, creature_holder.transform);
         BaseCreature creature_base = new_creature.GetComponent<BaseCreature>();
 
-        if (new_creature.GetComponentInChildren<RangeScanner>() == null) {
-            Debug.Log("New Creatures Do Not Have Range Scanner");
-        }
         CreatureData data3 = CreateData(data1, data2, new_creature.GetComponent<Rigidbody2D>(), new_creature.GetComponentInChildren<RangeScanner>());
-
-        //set the new data to the creature and add base creature component
-        //new_creature.GetComponent<BaseCreature>().SetData(new());
-        //BaseCreature creature_base = new_creature.GetComponent<BaseCreature>();
         creature_base.SetData(data3);
-        CreatureManager.instance.AddCreature(creature_base);
-
-        
+ 
         SpriteRenderer spriteR = new_creature.GetComponent<SpriteRenderer>();
         spriteR.color = data3.Color;
         new_creature.name = creature_base.data.ID.ToString();
@@ -113,20 +98,7 @@ public class CreateCreature : MonoBehaviour
         find_food.SetRigidBody(creature_rb);
         find_food.SetScanner(ref scanner);
 
-        ResponseAccepter response = new();
-        response.SetData(data);
-        response.SetRigidBody(creature_rb);
-        response.SetScanner(ref scanner);   
-
-        RequestBreed rb = new();
-        rb.SetData(data);
-        rb.SetRigidBody(creature_rb);
-        rb.SetScanner(ref scanner);
-
-        //actions.Add(response);
         actions.Add(find_food);
-        //actions.Add(rb);
-        //actions.Add(wander);
         return actions;
     }
 }

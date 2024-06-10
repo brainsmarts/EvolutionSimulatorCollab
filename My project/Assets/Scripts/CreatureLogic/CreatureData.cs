@@ -85,12 +85,11 @@ public class CreatureData
     public void SetRandomPath(){
         int negativex = UnityEngine.Random.Range(0f,1f) > .5f ? -1 : 1;
         int negativey = UnityEngine.Random.Range(0f,1f) > .5f ? -1 : 1;
-        Debug.Log(negativex);
         Vector3Int position = grid.WorldToCell(transform.position);
         position.x += negativex * UnityEngine.Random.Range(5,10);
         position.y += negativey * UnityEngine.Random.Range(5,10);
         //Debug.Log(GameManager.Instance.OutOfBounds(position));
-        Debug.Log(GameManager.Instance.IsNotRock(position));
+        //Debug.Log(GameManager.Instance.IsNotRock(position));
         if(GameManager.Instance.OutOfBounds(position) || !GameManager.Instance.IsNotRock(position)){
             return;
         }

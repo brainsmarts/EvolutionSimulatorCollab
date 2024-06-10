@@ -12,9 +12,11 @@ public class FindFood : ActionBase
     private RangeScanner scanner;
     private Grid grid;
     private FoodScript food;
-    private Vector2 next_location;
-    private Stack<Vector3Int> path;
-    public bool running;
+    public bool running = false;
+
+    public bool IsRunning(){
+        return running;
+    }
 
     public FindFood()
     {
@@ -38,24 +40,11 @@ public class FindFood : ActionBase
         scanner = rangeScanner;
     }
 
-    public bool IsRunning()
-    {
-        return running;
-    }
-
     public bool Condition()
     {
-        //Debug.Log("Is There food?");
         if (data.IsFull())
         {
             return false;
-        }
-        if(food != null)
-        {
-            if(food == scanner.GetNearestFood())
-            {
-                return false;
-            }
         }
         food = scanner.GetNearestFood();  
         return food != null;
@@ -64,60 +53,25 @@ public class FindFood : ActionBase
 
     public void Init()
     {
-        //List<Vector3Int> neighboors = GenericMovement.GetNeighboors(grid.WorldToCell(transform.position));
-        Debug.Log("Food Init");
-        if (food == null)
-        {
-            rb.velocity *= 0;
-            running = false;
-            return;
-        }
+        data.SetNewTargetLocation(grid.WorldToCell(food.GetPosition()));
         running = true;
+        Debug.Log("Food Init");
     }
 
     public void Run()
     {
-        data.SetNewTargetLocation(grid.WorldToCell(food.GetPosition()));
-        running = false;
-        Debug.Log("Find Food Run");
-        /*
-        if (Vector2.Distance(rb.position, next_location) < 0.05f)
-        {
-            if (food == null) {
-                rb.velocity *= 0;
-                running = false;
-                return;
-            }
-            if (food.InRange(rb))
-            {
-                int energy_gained = food.EatFood();
-                data.IncreaseEnergy(energy_gained);
-                running = false;
-                rb.velocity *= 0;
-                return;
-            }
-            else
-            {
-                next_location = grid.GetCellCenterWorld(path.Pop());
-                data.DecreaseEnergy(1);
-            }
+        if(food == null){
+            running = false;
+            data.SetRandomPath();
         }
-        rb.velocity = new Vector2(next_location.x - rb.position.x, next_location.y - rb.position.y).normalized * data.Speed * Time.deltaTime;
-        RaycastHit2D hit = Physics2D.Raycast(rb.position, rb.velocity.normalized, .05f);
-        if (hit.collider != null)
-        {
-            float left = 0;
-            if (rb.velocity.x > rb.velocity.y)
-            {
-                left = rb.velocity.x > 0 ? .1f : -.1f;
-                rb.AddForce(new(left, 0));
-            }
-            else
-            {
-                left = rb.velocity.y > 0 ? .1f : -.1f;
-                rb.AddForce(new(0, left));
-            }
-        }*/
+
+        if(Vector2.Distance(food.GetPosition(), rb.position) < .05){
+            data.IncreaseEnergy(food.EatFood());
+            running = false;
+            data.SetRandomPath();
+        }
+
+        //Debug.Log("Find Food Run");
     }
 
     override
