@@ -36,7 +36,7 @@ public class RequestBreed : ActionBase
         this.data = data;
     }
 
-    public void SetScanner(ref RangeScanner rangeScanner)
+    public void SetScanner(RangeScanner rangeScanner)
     {
         scanner = rangeScanner;
     }
@@ -85,7 +85,7 @@ public class RequestBreed : ActionBase
     public void Init()
     {
         //get path
-        running = data.Target.SendRequest(action_id, data.ID);
+        //running = data.Target.SendRequest(action_id, data.ID);
         if (running == false)
         {
             data.Target = null;

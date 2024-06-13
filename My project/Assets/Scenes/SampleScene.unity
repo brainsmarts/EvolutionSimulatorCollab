@@ -940,74 +940,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!1 &896692821
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 896692824}
-  - component: {fileID: 896692823}
-  - component: {fileID: 896692822}
-  m_Layer: 0
-  m_Name: EventSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &896692822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896692821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
---- !u!114 &896692823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896692821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!4 &896692824
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 896692821}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1009978302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,6 +952,7 @@ GameObject:
   - component: {fileID: 1009978305}
   - component: {fileID: 1009978304}
   - component: {fileID: 1009978303}
+  - component: {fileID: 1009978307}
   m_Layer: 5
   m_Name: CreatureInfoView
   m_TagString: Untagged
@@ -1110,6 +1043,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1009978307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009978302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ea86cc7022a1a43a520a097c84c195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvas: {fileID: 1009978305}
+  _text: {fileID: 1814108232}
+  camcon: {fileID: 519420033}
 --- !u!1 &1067818209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1155,6 +1103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LogRate: 60
+  log: {fileID: 0}
 --- !u!1 &1104449223
 GameObject:
   m_ObjectHideFlags: 0
@@ -36821,7 +36770,6 @@ GameObject:
   - component: {fileID: 1424265768}
   - component: {fileID: 1424265769}
   - component: {fileID: 1424265770}
-  - component: {fileID: 1424265771}
   - component: {fileID: 1424265772}
   m_Layer: 0
   m_Name: GameManager
@@ -36859,7 +36807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1509355984}
   world_map: {fileID: 1104449226}
-  time_scale: 1
+  time_scale: 0.5
   terrain_map: {fileID: 890441168}
 --- !u!114 &1424265769
 MonoBehaviour:
@@ -36873,7 +36821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5429587594d0a04bbee9f00c0ff4801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartingFoodAmount: 5
+  StartingFoodAmount: 20
   food_map: {fileID: 503291662}
   world_map: {fileID: 1104449226}
   food_holder: {fileID: 208674763}
@@ -36895,21 +36843,6 @@ MonoBehaviour:
   creature_prefab: {fileID: 7492689596350130786, guid: fe1f48aac56d1744081bfc59fce9caaf, type: 3}
   NumOfStartingCreatures: 1
   creature_holder: {fileID: 1067818209}
---- !u!114 &1424265771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1424265766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1ea86cc7022a1a43a520a097c84c195, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _canvas: {fileID: 1009978305}
-  _text: {fileID: 1814108232}
-  camcon: {fileID: 519420033}
 --- !u!114 &1424265772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36928,7 +36861,7 @@ MonoBehaviour:
   border_map: {fileID: 456813782}
   water_tile: {fileID: 11400000, guid: 5af10e1ef0d3c484ea84ec7f85a3944e, type: 2}
   rock_tile: {fileID: 11400000, guid: 1cf92805ad041614b8920a6945e0ee16, type: 2}
-  scale: 20
+  scale: 1
   offsetx: 0
   offsety: 0
 --- !u!1 &1509355983
@@ -37100,7 +37033,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 42.62376, y: 48.306988, z: -96.35121, w: -435.34088}
+  m_margin: {x: 42.62376, y: 48.306988, z: -493.18372, w: -435.34088}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -37122,6 +37055,5 @@ SceneRoots:
   - {fileID: 1424265767}
   - {fileID: 1509355985}
   - {fileID: 1067818210}
-  - {fileID: 896692824}
   - {fileID: 1009978306}
   - {fileID: 208674763}

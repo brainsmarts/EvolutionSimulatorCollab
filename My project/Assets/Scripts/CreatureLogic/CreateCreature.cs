@@ -65,7 +65,6 @@ public class CreateCreature : MonoBehaviour
         SpriteRenderer spriteR = new_creature.GetComponent<SpriteRenderer>();
         spriteR.color = data3.Color;
         new_creature.name = creature_base.data.ID.ToString();
-
     }
 
     private CreatureData CreateData(CreatureData parent1, CreatureData parent2, Rigidbody2D creature_rb, RangeScanner scanner){
@@ -96,7 +95,7 @@ public class CreateCreature : MonoBehaviour
         FindFood find_food = new();
         find_food.SetData(data);
         find_food.SetRigidBody(creature_rb);
-        find_food.SetScanner(ref scanner);
+        find_food.SetScanner(scanner);
 
         actions.Add(find_food);
         return actions;

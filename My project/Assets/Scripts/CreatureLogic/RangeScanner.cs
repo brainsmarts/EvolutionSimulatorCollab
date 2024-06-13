@@ -6,7 +6,6 @@ public class RangeScanner : MonoBehaviour
 {
     [SerializeField]
     private CircleCollider2D range;
-    private HashSet<GameObject> objects_in_range;
     private HashSet<BaseCreature> creatures_in_range;
     private HashSet<FoodScript> food_in_range;
 
@@ -14,25 +13,23 @@ public class RangeScanner : MonoBehaviour
     void Awake()
     {
         //Debug.Log("Start method called, initializing HashSets.");
-        objects_in_range = new();
         creatures_in_range = new();
         food_in_range = new();
-        range.enabled = false;
+        //range.enabled = false;
+        range.enabled = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log(other);
         if (other.tag.Equals("Creature"))
         { 
             creatures_in_range.Add(other.gameObject.GetComponent<BaseCreature>());  
         } else if (other.tag.Equals("Food"))
         {
-            //Debug.Log("Food Found");
+            Debug.Log("Food Found");
             food_in_range.Add(other.gameObject.GetComponent<FoodScript>());
         }
-            
-        objects_in_range.Add(other.gameObject); 
+           
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -43,9 +40,9 @@ public class RangeScanner : MonoBehaviour
         }
         else if(collision.tag.Equals("Food"))
         {
+            Debug.Log("Food Removed");
             food_in_range.Remove(collision.gameObject.GetComponent<FoodScript>());
         }
-        objects_in_range.Remove(collision.gameObject);
     }
 
     public void SetRange(int creature_range)
@@ -59,17 +56,6 @@ public class RangeScanner : MonoBehaviour
         return hit.collider.Equals(see);
     }
 
-    public BaseCreature Find(int creature_id)
-    {
-        foreach(BaseCreature creature in creatures_in_range)
-        {
-            if(creature.data.ID == creature_id)
-            {
-                return creature;
-            }
-        }
-        return null;
-    }
     public HashSet<BaseCreature> GetCreatures()
     {
         if(creatures_in_range == null)
@@ -94,12 +80,6 @@ public class RangeScanner : MonoBehaviour
         }
 
         return nearest_food;
-    }
-
-    override
-    public string ToString()
-    {
-        return "I Am the Range Scanner";
     }
 
     public void Enable()

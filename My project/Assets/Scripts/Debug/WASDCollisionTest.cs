@@ -16,7 +16,7 @@ public class WASDCollisionTest : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right arrow keys
         float moveVertical = Input.GetAxis("Vertical"); // W/S or Up/Down arrow keys
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        Vector3 movement = new Vector3(moveHorizontal, moveVertical);
         transform.Translate(movement * 5 * Time.deltaTime, Space.World);
     }
 }

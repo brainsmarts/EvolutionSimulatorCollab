@@ -28,7 +28,6 @@ public class CreatureManager : MonoBehaviour
         
     }
 
-
     void FixedUpdate(){
         if(LogTimer < LogRate){
             LogTimer += Time.deltaTime;

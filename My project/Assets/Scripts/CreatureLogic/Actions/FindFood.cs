@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class FindFood : ActionBase
 {
-    public int weight { get; }
     public Rigidbody2D rb;
     public CreatureData data;
     private RangeScanner scanner;
@@ -20,7 +20,6 @@ public class FindFood : ActionBase
 
     public FindFood()
     {
-        weight = 1;
         grid = GameManager.Instance.getGrid();
     }
 
@@ -34,9 +33,8 @@ public class FindFood : ActionBase
         this.data = data;
     }
 
-    public void SetScanner(ref RangeScanner rangeScanner)
+    public void SetScanner(RangeScanner rangeScanner)
     {
-        
         scanner = rangeScanner;
     }
 
@@ -53,25 +51,27 @@ public class FindFood : ActionBase
 
     public void Init()
     {
+        Debug.Log("Init");
+        Debug.Log("Food Position: " + grid.WorldToCell(food.GetPosition()));
+        Debug.Log("Creature Position" + grid.WorldToCell(data.transform.position));
         data.SetNewTargetLocation(grid.WorldToCell(food.GetPosition()));
         running = true;
-        Debug.Log("Food Init");
     }
 
     public void Run()
     {
+        Debug.Log("Run");
         if(food == null){
             running = false;
-            data.SetRandomPath();
+            //data.SetRandomPath();
+            return;
         }
 
-        if(Vector2.Distance(food.GetPosition(), rb.position) < .05){
+        if(Vector2.Distance(food.GetPosition(), rb.position) <= 0.16f){
             data.IncreaseEnergy(food.EatFood());
             running = false;
-            data.SetRandomPath();
+            //data.SetRandomPath();
         }
-
-        //Debug.Log("Find Food Run");
     }
 
     override

@@ -37,10 +37,10 @@ public class GameManager : MonoBehaviour
 
     public bool OutOfBounds(Vector3Int position)
     {
-        Debug.Log("Out of bounds Logging + /nDesiredPosiiton: "+ position.x + " " + position.y + 
+        /*Debug.Log("Out of bounds Logging + /nDesiredPosiiton: "+ position.x + " " + position.y + 
             "\nMinimumBoundry" + minx + " " + miny +
-            "\nMaximumBoundry" + maxx + " " + maxy);
-        return position.x >= maxx || position.x <= minx || position.y >= maxy || position.y <= miny;
+            "\nMaximumBoundry" + maxx + " " + maxy);*/
+        return position.x >= maxx || position.x <= minx-1 || position.y >= maxy || position.y <= miny-1;
     }
 
     public bool IsNotRock(Vector3Int position)

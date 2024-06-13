@@ -69,7 +69,6 @@ public class CameraControl : MonoBehaviour
         cam.transform.position = new Vector3(following.position.x, following.position.y, transform.position.z);
     }
 
-
     private void Zoom()
     {
         float scroll = Input.mouseScrollDelta.y;

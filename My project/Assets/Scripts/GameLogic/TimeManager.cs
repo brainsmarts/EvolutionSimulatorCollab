@@ -22,7 +22,5 @@ public class TimeManager : MonoBehaviour
         } else {
             
         }
-            
     }
-    
 }

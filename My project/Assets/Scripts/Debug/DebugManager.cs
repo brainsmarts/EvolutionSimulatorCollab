@@ -66,6 +66,10 @@ public class DebugManager : MonoBehaviour
         stats += "Age:\t" +_creature.GetAge() + "\n";
         stats += "Sight Range:" +_creature.data.Sight_range + "\n";
         stats += "Speed:"+_creature.data.Speed + "\n";
+        stats += "Target Location: " + _creature.data.Target_Location + "\n";
+        stats += "Current Location:" + _creature.transform.position + "\n";
+        stats += "Path: " + _creature.data.path.Count;
+        
         _text.text = stats;
     }
 }

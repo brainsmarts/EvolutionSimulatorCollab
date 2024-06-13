@@ -17,14 +17,10 @@ public class CreatureData
     [SerializeField]
     public int Current_energy {get; private set;}
     [SerializeField]
-    public int Health {get;}
-    [SerializeField]
     public int Sight_range {get;}
     [SerializeField]
     public int Speed { get; private set;}
     public BaseCreature Target {get; set;}
-    public int Request_id {get; set;}
-
     public float TimeBorn {get; private set;}
     public List<ActionBase> Actions {get; private set;}
     public Color Color { get; private set;}
@@ -43,7 +39,7 @@ public class CreatureData
         Color = color;
         this.transform = transform;
         grid = GameManager.Instance.getGrid();
-        SetRandomPath();
+        path = new();
     }
 
     public void SetActions(List<ActionBase> actions){
@@ -66,20 +62,15 @@ public class CreatureData
         return Current_energy >= Energy;
     }
 
-    public void SetNewTargetLocation(Vector3 new_location)
+    public void SetNewTargetLocation(Vector3Int new_location)
     {
-        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), grid.WorldToCell(new_location));
-        Target_Location = grid.CellToWorld(path.Pop());
-    }
-
-    private void SetNewTargetLocation(Vector3Int new_location)
-    {
-        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position),new_location);
-        Target_Location = grid.CellToWorld(path.Pop());
+        path = GenericMovement.MoveTo(grid.WorldToCell(transform.position), new_location);
+        Target_Location = grid.GetCellCenterWorld(path.Pop());
     }
 
     public void NextInPath(){
-        Target_Location = grid.CellToWorld(path.Pop());
+        Target_Location = grid.GetCellCenterWorld(path.Pop());
+        Debug.Log(Target_Location);
     }
 
     public void SetRandomPath(){

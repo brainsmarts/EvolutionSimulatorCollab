@@ -17,6 +17,8 @@ public class BaseCreature : MonoBehaviour
 
     [SerializeField]
     private Rigidbody2D rb;
+    [SerializeField]
+    private Collider2D collider;
     
     //private List<ActionBase> actions;
     public ActionBase current_action { get; private set; }
@@ -26,22 +28,14 @@ public class BaseCreature : MonoBehaviour
     private float metobolism_rate = 10;
     private float metobolism_timer = 0;
 
-    //[SerializeField]
-    //private Animator animator;
-    private Grid grid;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //set a random location to head to
-        grid = GameManager.Instance.getGrid();
-
-        //data.SetNewTargetLocation(current_position);
-        //next_location = data.path.Pop();
         scanner.SetRange(data.Sight_range);
         data.Target = null;
-        data.Request_id = -1;
         scanner.Enable();
     }
 
@@ -69,6 +63,7 @@ public class BaseCreature : MonoBehaviour
     }
     private void DoAction()
     {
+        //replace null with idle
         if(current_action == null){
             foreach (ActionBase action in data.Actions)
                 {
@@ -91,18 +86,40 @@ public class BaseCreature : MonoBehaviour
 
     private void MoveToTargetLocation(){
         //Debug.Log(grid.WorldToCell(transform.position) + " < > " + grid.WorldToCell(data.Target_Location));
-        if(Vector3.Distance(transform.position,data.Target_Location) < 0.01){
+        if (data.path.Count == 0)
+        {
+            //replace set path with a action
+            Debug.Log("New Path Set");
+            data.SetRandomPath();
+            /*
+            Stack<Vector3Int> temp = new Stack<Vector3Int>(data.path);
+            foreach (Vector3Int pathway in temp)
+            {
+                Debug.Log("Random Path: " + grid.GetCellCenterWorld(pathway));
+            }*/
+            return;
+        }
+        
+        //Condition comparing if distance is less than 0.01 is sketchy
+        if (Vector3.Distance(transform.position,data.Target_Location) < 0.01){
             Debug.Log("Target Reached");
-            if(data.path.Count == 0){
-                Debug.Log("New Path Set");
-                data.SetRandomPath();
-            } else{
-                Debug.Log("Next In Path");
-                data.NextInPath();
-            }
+            Debug.Log("Next In Path");
+            data.NextInPath();
         }
 
         rb.velocity = new Vector2(data.Target_Location.x - transform.position.x, data.Target_Location.y - transform.position.y).normalized * data.Speed * Time.deltaTime;
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, rb.velocity, .2f);
+        Debug.DrawRay(transform.position, rb.velocity.normalized * 0.1f, Color.red);
+      
+        if (hit.collider != null && !collider.gameObject.Equals(gameObject))
+        {
+            Debug.Log("Stuck");
+            float newx, newy;
+            newx = -rb.velocity.y;
+            newy = rb.velocity.x;
+            rb.AddForce(new Vector2(newx, newy).normalized, ForceMode2D.Impulse);
+        }
     }
 
     private void CheckDeath()
@@ -115,11 +132,7 @@ public class BaseCreature : MonoBehaviour
         } 
     }
 
-    public Vector3 GetPosition()
-    {
-        return transform.position;
-    }
-
+    /*
     internal bool SendRequest(int request_id, int creature_id)
     {
         bool response = Response.Reply(request_id, data);
@@ -137,7 +150,7 @@ public class BaseCreature : MonoBehaviour
         }
         data.Request_id = request_id;
         return true;
-    }
+    }*/
 
     public void SetData(CreatureData data){
         this.data = data;

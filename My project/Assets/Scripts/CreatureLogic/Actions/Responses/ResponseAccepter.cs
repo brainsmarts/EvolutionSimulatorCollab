@@ -21,7 +21,7 @@ public class ResponseAccepter : ActionBase
         this.data = data;
     }
 
-    public void SetScanner(ref RangeScanner rangeScanner)
+    public void SetScanner(RangeScanner rangeScanner)
     {
         scanner = rangeScanner;
     }
@@ -50,7 +50,7 @@ public class ResponseAccepter : ActionBase
     {
         //get path
         //Debug.Log(data.Request_id);
-        response = Response.GetResponse(data.Request_id, rb, data, scanner);
+        //response = Response.GetResponse(data.Request_id, rb, data, scanner);
         response.Init();
         running = true;
     }
@@ -59,7 +59,7 @@ public class ResponseAccepter : ActionBase
         running = response.RunResponse();   
         if(running == false)
         {
-            data.Request_id = -1;
+            //data.Request_id = -1;
             data.Target = null;
         }
     }
